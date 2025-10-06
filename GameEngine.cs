@@ -1,4 +1,4 @@
-﻿// IScratchEngine.cs
+﻿using System;
 
 namespace LunyScratch
 {
