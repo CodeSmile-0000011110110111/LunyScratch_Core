@@ -14,7 +14,7 @@ namespace LunyScratch
 	{
 		private ValueType _valueType;
 		private Double _number;
-		private String? _string;
+		private String _string;
 
 		public Variable(Boolean truthValue)
 		{

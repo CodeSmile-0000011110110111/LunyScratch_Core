@@ -5,14 +5,18 @@ namespace LunyScratch
 {
 	public sealed class RepeatUntilTrueBlock : RepeatBlockBase
 	{
-		private readonly Func<Boolean> _condition;
-
 		public RepeatUntilTrueBlock(Func<Boolean> condition, params IScratchBlock[] blocks)
-			: base(blocks) => _condition = condition;
+			: base(new ConditionBlock(condition), blocks) {}
 
 		public RepeatUntilTrueBlock(Func<Boolean> condition, List<IScratchBlock> blocks)
-			: base(blocks) => _condition = condition;
+			: base(new ConditionBlock(condition), blocks) {}
 
-		protected override Boolean ShouldExitLoop() => _condition(); // Exit when condition becomes true
+		public RepeatUntilTrueBlock(ConditionBlock condition, params IScratchBlock[] blocks)
+			: base(condition, blocks) {}
+
+		public RepeatUntilTrueBlock(ConditionBlock condition, List<IScratchBlock> blocks)
+			: base(condition, blocks) {}
+
+		protected override Boolean ShouldExitLoop() => EvaluateCondition(); // Exit when condition becomes true
 	}
 }

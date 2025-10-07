@@ -14,10 +14,10 @@ namespace LunyScratch
 			_result = false;
 		}
 
-		public void OnEnter() => _result = false;
-
 		public void Run(Double deltaTimeInSeconds) => _result = _condition();
 
 		public Boolean IsComplete() => _result;
+
+		internal Boolean Evaluate() => _condition();
 	}
 }

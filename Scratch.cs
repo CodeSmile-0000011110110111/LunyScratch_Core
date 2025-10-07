@@ -4,6 +4,7 @@ namespace LunyScratch
 {
 	public sealed class Scratch
 	{
+		// CONTROL
 		public static void Run(SequenceBlock sequence) => GameEngine.Runtime.RunBlock(sequence);
 		public static void Run(params IScratchBlock[] blocks) => Run(new SequenceBlock(blocks));
 
@@ -15,5 +16,6 @@ namespace LunyScratch
 
 		public static void RepeatUntilTrue(Func<Boolean> condition, params IScratchBlock[] blocks) =>
 			Run(new RepeatUntilTrueBlock(condition, blocks));
+
 	}
 }
