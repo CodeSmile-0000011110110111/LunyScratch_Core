@@ -10,9 +10,6 @@ namespace LunyScratch
 		// LOOKS
 		void ShowMessage(String message, Double duration);
 
-		// SOUND
-		void PlaySound(String soundName, Double volume);
-
 		// TIME
 		Double GetDeltaTimeInSeconds();
 		Double GetFixedDeltaTimeInSeconds();
