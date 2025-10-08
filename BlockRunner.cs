@@ -6,44 +6,28 @@ namespace LunyScratch
 	/// <summary>
 	/// Manages block execution with separate runners for regular and physics updates.
 	/// </summary>
-	public sealed class BlockRunner
+	internal sealed class BlockRunner
 	{
 		private readonly List<IScratchBlock> _blocks = new();
 		private readonly List<IScratchBlock> _physicsBlocks = new();
 
-		public void ProcessUpdate(Double deltaTimeInSeconds) => ProcessBlocks(_blocks, deltaTimeInSeconds);
+		internal void ProcessUpdate(Double deltaTimeInSeconds) => ProcessBlocks(_blocks, deltaTimeInSeconds);
 
-		public void ProcessPhysicsUpdate(Double fixedDeltaTimeInSeconds) => ProcessBlocks(_physicsBlocks, fixedDeltaTimeInSeconds);
+		internal void ProcessPhysicsUpdate(Double fixedDeltaTimeInSeconds) => ProcessBlocks(_physicsBlocks, fixedDeltaTimeInSeconds);
 
-		public void Dispose()
+		internal void Dispose()
 		{
 			_blocks.Clear();
 			_physicsBlocks.Clear();
 		}
 
-		// Execution methods
-		public void Run(params IScratchBlock[] blocks) => AddBlock(new SequenceBlock(blocks));
-
-		public void RunPhysics(params IScratchBlock[] blocks) => AddPhysicsBlock(new SequenceBlock(blocks));
-
-		public void RepeatForever(params IScratchBlock[] blocks) => AddBlock(new RepeatForeverBlock(blocks));
-
-		public void RepeatForeverPhysics(params IScratchBlock[] blocks) => AddPhysicsBlock(new RepeatForeverBlock(blocks));
-
-		public void RepeatWhileTrue(Func<Boolean> condition, params IScratchBlock[] blocks) =>
-			AddBlock(new RepeatWhileTrueBlock(condition, blocks));
-
-		public void RepeatUntilTrue(Func<Boolean> condition, params IScratchBlock[] blocks) =>
-			AddBlock(new RepeatUntilTrueBlock(condition, blocks));
-
-		// Direct block adding (for IEngineRuntime interface)
-		public void AddBlock(IScratchBlock block)
+		internal void AddBlock(IScratchBlock block)
 		{
 			block.OnEnter();
 			_blocks.Add(block);
 		}
 
-		public void AddPhysicsBlock(IScratchBlock block)
+		internal void AddPhysicsBlock(IScratchBlock block)
 		{
 			block.OnEnter();
 			_physicsBlocks.Add(block);
