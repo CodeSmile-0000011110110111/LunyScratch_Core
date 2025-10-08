@@ -5,45 +5,45 @@ namespace LunyScratch
 	public static partial class Blocks
 	{
 		/// <summary>
-		/// Returns true while the key is held down.
+		/// Returns a condition that checks if the key is held down.
 		/// </summary>
-		public static Boolean IsKeyPressed(Key key) => GameEngine.Actions.IsKeyPressed(key);
+		public static ConditionBlock IsKeyPressed(Key key) => new ConditionBlock(() => GameEngine.Actions.IsKeyPressed(key));
 
 		/// <summary>
-		/// Returns true on the frame the key was pressed down.
+		/// Returns a condition that checks if the key was just pressed this frame.
 		/// </summary>
 		/// <remarks>
 		/// This will only be true for one frame. For this reason it should not be used in fixed step (physics) update.
 		/// </remarks>
-		public static Boolean IsKeyJustPressed(Key key) => GameEngine.Actions.IsKeyJustPressed(key);
+		public static ConditionBlock IsKeyJustPressed(Key key) => new ConditionBlock(() => GameEngine.Actions.IsKeyJustPressed(key));
 
 		/// <summary>
-		/// Returns true on the frame the key was released.
+		/// Returns a condition that checks if the key was just released this frame.
 		/// </summary>
 		/// <remarks>
 		/// This will only be true for one frame. For this reason it should not be used in fixed step (physics) update.
 		/// </remarks>
-		public static Boolean IsKeyJustReleased(Key key) => GameEngine.Actions.IsKeyJustReleased(key);
+		public static ConditionBlock IsKeyJustReleased(Key key) => new ConditionBlock(() => GameEngine.Actions.IsKeyJustReleased(key));
 
 		/// <summary>
-		/// Returns true while the mouse button is held down.
+		/// Returns a condition that checks if the mouse button is held down.
 		/// </summary>
-		public static Boolean IsMouseButtonPressed(MouseButton button) => GameEngine.Actions.IsMouseButtonPressed(button);
+		public static ConditionBlock IsMouseButtonPressed(MouseButton button) => new ConditionBlock(() => GameEngine.Actions.IsMouseButtonPressed(button));
 
 		/// <summary>
-		/// Returns true on the frame the mouse button was pressed down.
-		/// </summary>
-		/// <remarks>
-		/// This will only be true for one frame. For this reason it should not be used in fixed step (physics) update.
-		/// </remarks>
-		public static Boolean IsMouseButtonJustPressed(MouseButton button) => GameEngine.Actions.IsMouseButtonJustPressed(button);
-
-		/// <summary>
-		/// Returns true on the frame the mouse button was released.
+		/// Returns a condition that checks if the mouse button was just pressed this frame.
 		/// </summary>
 		/// <remarks>
 		/// This will only be true for one frame. For this reason it should not be used in fixed step (physics) update.
 		/// </remarks>
-		public static Boolean IsMouseButtonJustReleased(MouseButton button) => GameEngine.Actions.IsMouseButtonJustReleased(button);
+		public static ConditionBlock IsMouseButtonJustPressed(MouseButton button) => new ConditionBlock(() => GameEngine.Actions.IsMouseButtonJustPressed(button));
+
+		/// <summary>
+		/// Returns a condition that checks if the mouse button was just released this frame.
+		/// </summary>
+		/// <remarks>
+		/// This will only be true for one frame. For this reason it should not be used in fixed step (physics) update.
+		/// </remarks>
+		public static ConditionBlock IsMouseButtonJustReleased(MouseButton button) => new ConditionBlock(() => GameEngine.Actions.IsMouseButtonJustReleased(button));
 	}
 }
