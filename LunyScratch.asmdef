@@ -1,6 +1,6 @@
 {
     "name": "LunyScratch",
-    "rootNamespace": "",
+    "rootNamespace": "LunyScratch",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LunyScratch
 {
-	public sealed class RepeatUntilTrueBlock : RepeatBlockBase
+	internal sealed class RepeatUntilTrueBlock : RepeatBlockBase
 	{
 		public RepeatUntilTrueBlock(Func<Boolean> condition, params IScratchBlock[] blocks)
 			: base(new ConditionBlock(condition), blocks) {}

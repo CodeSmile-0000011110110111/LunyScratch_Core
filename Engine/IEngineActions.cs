@@ -27,8 +27,5 @@ namespace LunyScratch
 		Boolean IsMouseButtonPressed(MouseButton button);
 		Boolean IsMouseButtonJustPressed(MouseButton button);
 		Boolean IsMouseButtonJustReleased(MouseButton button);
-
-		// TRANSFORMS
-		void RotateTransform(ITransform transform, Single x, Single y, Single z);
 	}
 }

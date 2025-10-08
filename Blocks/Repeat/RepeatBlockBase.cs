@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace LunyScratch
 {
 	// Base class for repeating block sequences
-	public abstract class RepeatBlockBase : IScratchBlock
+	internal abstract class RepeatBlockBase : IScratchBlock
 	{
 		protected readonly List<IScratchBlock> _blocks;
 		protected readonly ConditionBlock _conditionBlock;

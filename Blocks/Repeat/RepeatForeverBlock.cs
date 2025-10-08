@@ -2,7 +2,7 @@ using System;
 
 namespace LunyScratch
 {
-	public sealed class RepeatForeverBlock : RepeatBlockBase
+	internal sealed class RepeatForeverBlock : RepeatBlockBase
 	{
 		private static readonly ConditionBlock s_DummyCondition = new(() => false);
 

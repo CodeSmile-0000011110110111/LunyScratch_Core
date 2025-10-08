@@ -1,3 +1,5 @@
+using System;
+
 namespace LunyScratch
 {
 	/// <summary>
@@ -6,25 +8,14 @@ namespace LunyScratch
 	public interface IScratchContext
 	{
 		/// <summary>
-		/// Gets a component of the specified type attached to this context's game object.
-		/// Returns null if no component is found.
-		/// </summary>
-		T GetComponent<T>() where T : class;
-
-		/// <summary>
-		/// Gets all components of the specified type in children of this context's game object.
-		/// </summary>
-		T[] GetComponentsInChildren<T>() where T : class;
-
-		/// <summary>
 		/// Gets the IRigidbody for this context. Returns null if no Rigidbody component exists.
 		/// </summary>
-		IRigidbody GetRigidbody();
+		IRigidbody Rigidbody { get; }
 
 		/// <summary>
 		/// Gets the ITransform for this context. Returns null if no Transform exists.
 		/// </summary>
-		ITransform GetTransform();
+		ITransform Transform { get; }
 
 		/// <summary>
 		/// Finds a child game object by name in the hierarchy and returns it as an IEngineObject.
@@ -32,6 +23,6 @@ namespace LunyScratch
 		/// Returns null if not found.
 		/// Results are cached by name for performance.
 		/// </summary>
-		IEngineObject FindChild(System.String name);
+		IEngineObject FindChild(String name);
 	}
 }

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace LunyScratch
 {
 	// Table (array + dictionary hybrid, like Lua)
-	public class Table
+	public sealed class Table
 	{
 		private readonly List<Variable> _array = new();
 		private readonly Dictionary<String, Variable> _dictionary = new();

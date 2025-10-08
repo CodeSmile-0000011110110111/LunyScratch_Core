@@ -22,7 +22,7 @@ namespace LunyScratch
 
 			public void Run(IScratchContext context, Double deltaTimeInSeconds)
 			{
-				var rigidbody = context?.GetRigidbody();
+				var rigidbody = context?.Rigidbody;
 				if (rigidbody == null) return;
 
 				var forward = rigidbody.Forward;
@@ -41,7 +41,7 @@ namespace LunyScratch
 
 			public void Run(IScratchContext context, Double deltaTimeInSeconds)
 			{
-				var rigidbody = context?.GetRigidbody();
+				var rigidbody = context?.Rigidbody;
 				if (rigidbody == null) return;
 
 				var forward = rigidbody.Forward;
@@ -56,7 +56,7 @@ namespace LunyScratch
 		{
 			public void Run(IScratchContext context, Double deltaTimeInSeconds)
 			{
-				var rigidbody = context?.GetRigidbody();
+				var rigidbody = context?.Rigidbody;
 				if (rigidbody == null) return;
 
 				var currentVel = rigidbody.LinearVelocity;
@@ -74,7 +74,7 @@ namespace LunyScratch
 
 			public void Run(IScratchContext context, Double deltaTimeInSeconds)
 			{
-				var rigidbody = context?.GetRigidbody();
+				var rigidbody = context?.Rigidbody;
 				if (rigidbody == null) return;
 
 				var vel = rigidbody.LinearVelocity;
@@ -92,7 +92,7 @@ namespace LunyScratch
 
 			public void Run(IScratchContext context, Double deltaTimeInSeconds)
 			{
-				var rigidbody = context?.GetRigidbody();
+				var rigidbody = context?.Rigidbody;
 				if (rigidbody == null) return;
 
 				var radiansPerSecond = -_degreesPerSecond * (Single)(Math.PI / 180.0);
@@ -110,7 +110,7 @@ namespace LunyScratch
 
 			public void Run(IScratchContext context, Double deltaTimeInSeconds)
 			{
-				var rigidbody = context?.GetRigidbody();
+				var rigidbody = context?.Rigidbody;
 				if (rigidbody == null) return;
 
 				var radiansPerSecond = _degreesPerSecond * (Single)(Math.PI / 180.0);
@@ -124,7 +124,7 @@ namespace LunyScratch
 		{
 			public void Run(IScratchContext context, Double deltaTimeInSeconds)
 			{
-				var rigidbody = context?.GetRigidbody();
+				var rigidbody = context?.Rigidbody;
 				if (rigidbody == null) return;
 
 				rigidbody.SetAngularVelocity(0, 0, 0);
@@ -141,7 +141,7 @@ namespace LunyScratch
 
 			public void Run(IScratchContext context, Double deltaTimeInSeconds)
 			{
-				var rigidbody = context?.GetRigidbody();
+				var rigidbody = context?.Rigidbody;
 				if (rigidbody == null) return;
 
 				var angVel = rigidbody.AngularVelocity;
