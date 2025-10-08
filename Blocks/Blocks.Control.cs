@@ -7,9 +7,13 @@ namespace LunyScratch
 		// TIME
 		public static IScratchBlock Wait(Double seconds) => new WaitBlock(seconds);
 
-		// ACTIVE
+		// ACTIVE - Direct object reference
 		public static IScratchBlock Enable(IEngineObject obj) => new ExecuteBlock(() => obj.SetEnabled(true));
 		public static IScratchBlock Disable(IEngineObject obj) => new ExecuteBlock(() => obj.SetEnabled(false));
+
+		// ACTIVE - Context-aware (find by name)
+		public static IScratchBlock Enable(String childName) => new EnableByNameBlock(childName);
+		public static IScratchBlock Disable(String childName) => new DisableByNameBlock(childName);
 
 		// CONDITION
 		public static IfBlock If(Func<Boolean> condition, params IScratchBlock[] blocks) =>
@@ -33,5 +37,36 @@ namespace LunyScratch
 
 		public static IScratchBlock RepeatUntilTrue(ConditionBlock condition, params IScratchBlock[] blocks) =>
 			new RepeatUntilTrueBlock(condition, blocks);
+
+		// Context-aware block implementations
+		private sealed class EnableByNameBlock : IScratchBlock
+		{
+			private readonly String _childName;
+
+			public EnableByNameBlock(String childName) => _childName = childName;
+
+			public void Run(IScratchContext context, Double deltaTimeInSeconds)
+			{
+				var child = context?.FindChild(_childName);
+				child?.SetEnabled(true);
+			}
+
+			public Boolean IsComplete() => true;
+		}
+
+		private sealed class DisableByNameBlock : IScratchBlock
+		{
+			private readonly String _childName;
+
+			public DisableByNameBlock(String childName) => _childName = childName;
+
+			public void Run(IScratchContext context, Double deltaTimeInSeconds)
+			{
+				var child = context?.FindChild(_childName);
+				child?.SetEnabled(false);
+			}
+
+			public Boolean IsComplete() => true;
+		}
 	}
 }

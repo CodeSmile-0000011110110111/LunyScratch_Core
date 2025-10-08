@@ -25,5 +25,13 @@ namespace LunyScratch
 		/// Gets the ITransform for this context. Returns null if no Transform exists.
 		/// </summary>
 		ITransform GetTransform();
+
+		/// <summary>
+		/// Finds a child game object by name in the hierarchy and returns it as an IEngineObject.
+		/// The search includes all descendants (recursive).
+		/// Returns null if not found.
+		/// Results are cached by name for performance.
+		/// </summary>
+		IEngineObject FindChild(System.String name);
 	}
 }

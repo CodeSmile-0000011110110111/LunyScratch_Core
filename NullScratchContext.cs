@@ -1,3 +1,5 @@
+using System;
+
 namespace LunyScratch
 {
 	/// <summary>
@@ -11,10 +13,12 @@ namespace LunyScratch
 
 		public T GetComponent<T>() where T : class => null;
 
-		public T[] GetComponentsInChildren<T>() where T : class => System.Array.Empty<T>();
+		public T[] GetComponentsInChildren<T>() where T : class => Array.Empty<T>();
 
 		public IRigidbody GetRigidbody() => null;
 
 		public ITransform GetTransform() => null;
+
+		public IEngineObject FindChild(String name) => null;
 	}
 }
