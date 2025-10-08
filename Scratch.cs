@@ -18,10 +18,13 @@ namespace LunyScratch
 
 		public static void RepeatForeverPhysics(params IScratchBlock[] blocks) => GameEngine.Runtime.RepeatForeverPhysics(blocks);
 
-		public static void RepeatWhileTrue(Func<Boolean> condition, params IScratchBlock[] blocks) =>
-			GameEngine.Runtime.RepeatWhileTrue(condition, blocks);
+		// public static void RepeatWhileTrue(Func<Boolean> condition, params IScratchBlock[] blocks) =>
+		// 	GameEngine.Runtime.RepeatWhileTrue(condition, blocks);
+		//
+		// public static void RepeatUntilTrue(Func<Boolean> condition, params IScratchBlock[] blocks) =>
+		// 	GameEngine.Runtime.RepeatUntilTrue(condition, blocks);
 
-		public static void RepeatUntilTrue(Func<Boolean> condition, params IScratchBlock[] blocks) =>
-			GameEngine.Runtime.RepeatUntilTrue(condition, blocks);
+		public static void When(Func<Boolean> condition, params IScratchBlock[] blocks) =>
+			GameEngine.Runtime.When(condition, blocks);
 	}
 }
