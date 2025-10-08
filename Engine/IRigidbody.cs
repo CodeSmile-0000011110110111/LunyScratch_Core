@@ -2,7 +2,7 @@
 
 namespace LunyScratch
 {
-	public interface IRigidbody
+	public interface IRigidbody : IEngineComponent
 	{
 		IVector3 LinearVelocity { get; }
 		IVector3 AngularVelocity { get; }

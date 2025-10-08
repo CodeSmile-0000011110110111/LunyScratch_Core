@@ -2,7 +2,7 @@ using System;
 
 namespace LunyScratch
 {
-	public interface ITransform
+	public interface ITransform : IEngineComponent
 	{
 		IVector3 Position { get; }
 		IVector3 Forward { get; }
