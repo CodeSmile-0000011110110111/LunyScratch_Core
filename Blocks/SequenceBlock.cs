@@ -27,12 +27,12 @@ namespace LunyScratch
 				_blocks[0].OnEnter();
 		}
 
-		public void Run(Double deltaTimeInSeconds)
+		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
 			if (_currentIndex >= _blocks.Count) return;
 
 			var currentBlock = _blocks[_currentIndex];
-			currentBlock.Run(deltaTimeInSeconds);
+			currentBlock.Run(context, deltaTimeInSeconds);
 
 			if (currentBlock.IsComplete())
 			{

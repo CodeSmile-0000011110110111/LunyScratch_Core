@@ -9,7 +9,7 @@ namespace LunyScratch
 		void OnEnter() {}
 		void OnExit() {}
 
-		void Run(Double deltaTimeInSeconds) {}
+		void Run(IScratchContext context, Double deltaTimeInSeconds) {}
 		Boolean IsComplete() => true;
 	}
 }

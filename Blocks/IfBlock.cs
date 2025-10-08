@@ -45,12 +45,12 @@ namespace LunyScratch
 				_completed = true; // No blocks to execute
 		}
 
-		public void Run(Double deltaTimeInSeconds)
+		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
 			if (_completed || _currentBlocks.Count == 0) return;
 
 			var currentBlock = _currentBlocks[_currentIndex];
-			currentBlock.Run(deltaTimeInSeconds);
+			currentBlock.Run(context, deltaTimeInSeconds);
 
 			if (currentBlock.IsComplete())
 			{

@@ -5,11 +5,15 @@ namespace LunyScratch
 {
 	/// <summary>
 	/// Manages block execution with separate runners for regular and physics updates.
+	/// Injects context into blocks during execution.
 	/// </summary>
 	internal sealed class BlockRunner
 	{
+		private readonly IScratchContext _context;
 		private readonly List<IScratchBlock> _blocks = new();
 		private readonly List<IScratchBlock> _physicsBlocks = new();
+
+		internal BlockRunner(IScratchContext context) => _context = context;
 
 		internal void ProcessUpdate(Double deltaTimeInSeconds) => ProcessBlocks(_blocks, deltaTimeInSeconds);
 
@@ -33,13 +37,13 @@ namespace LunyScratch
 			_physicsBlocks.Add(block);
 		}
 
-		private static void ProcessBlocks(List<IScratchBlock> blocks, Double deltaTimeInSeconds)
+		private void ProcessBlocks(List<IScratchBlock> blocks, Double deltaTimeInSeconds)
 		{
-			// Execute all active blocks
+			// Execute all active blocks, injecting context
 			for (var i = blocks.Count - 1; i >= 0; i--)
 			{
 				var block = blocks[i];
-				block.Run(deltaTimeInSeconds);
+				block.Run(_context, deltaTimeInSeconds);
 
 				if (block.IsComplete())
 				{

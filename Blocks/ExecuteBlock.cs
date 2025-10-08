@@ -15,7 +15,7 @@ namespace LunyScratch
 		}
 		public void OnEnter() => _executed = false;
 
-		public void Run(Double deltaTimeInSeconds)
+		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
 			if (!_executed)
 			{
