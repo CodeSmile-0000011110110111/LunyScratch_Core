@@ -1,8 +1,9 @@
 namespace LunyScratch
 {
-	internal interface IEngineRuntime
+	/// <summary>
+	/// Engine runtime interface for global block execution.
+	/// </summary>
+	internal interface IEngineRuntime : IScratchRunner
 	{
-		void RunBlock(IScratchBlock block);
-		void RunPhysicsBlock(IScratchBlock block);
 	}
 }
