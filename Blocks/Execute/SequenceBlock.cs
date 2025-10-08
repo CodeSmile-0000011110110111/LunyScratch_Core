@@ -29,7 +29,8 @@ namespace LunyScratch
 
 		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
-			if (_currentIndex >= _blocks.Count) return;
+			if (_currentIndex >= _blocks.Count)
+				return;
 
 			var currentBlock = _blocks[_currentIndex];
 			currentBlock.Run(context, deltaTimeInSeconds);

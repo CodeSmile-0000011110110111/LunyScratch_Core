@@ -1,77 +1,56 @@
 using System;
-using System.Collections.Generic;
 
 namespace LunyScratch
 {
-	/// <summary>
-	/// Event-like block that waits for a condition to become true once, then runs a sequence of blocks and completes.
-	/// Edge-triggered, one-shot: it starts the sequence on the first frame the condition evaluates to true.
-	/// </summary>
 	internal sealed class WhenBlock : IScratchBlock
 	{
-		private readonly Func<Boolean> _condition;
-		private readonly List<IScratchBlock> _blocks;
+		private readonly EventBlock _event;
 		private Boolean _triggered;
-		private Boolean _completed;
-		private SequenceBlock _sequence;
+		private readonly SequenceBlock _sequence;
 
-		public WhenBlock(Func<Boolean> condition, params IScratchBlock[] blocks)
+		public WhenBlock(EventBlock evt, params IScratchBlock[] blocks)
 		{
-			_condition = condition ?? throw new ArgumentNullException(nameof(condition));
-			_blocks = new List<IScratchBlock>(blocks ?? Array.Empty<IScratchBlock>());
-			_triggered = false;
-			_completed = false;
+			_event = evt ?? throw new ArgumentNullException(nameof(evt));
+			_sequence = new SequenceBlock(blocks);
 		}
 
 		public void OnEnter()
 		{
 			_triggered = false;
-			_completed = false;
-			_sequence = null;
+			_event.OnEnter();
 		}
 
 		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
-			if (_completed)
-				return;
-
+			// If we are not currently running the sequence, listen for the event
 			if (!_triggered)
 			{
-				if (_condition())
-				{
-					_triggered = true;
-					if (_blocks.Count == 0)
-					{
-						_completed = true;
-						return;
-					}
-
-					_sequence = new SequenceBlock(_blocks);
-					_sequence.OnEnter();
-				}
-				else
-				{
+				_event.Run(context, deltaTimeInSeconds);
+				if (!_event.IsComplete())
 					return;
-				}
+
+				_triggered = true;
+				_sequence.OnEnter(); // keep waiting for the event
 			}
 
-			// Run the child sequence until completion
-			_sequence?.Run(context, deltaTimeInSeconds);
-			if (_sequence != null && _sequence.IsComplete())
+			// Run the active sequence
+			_sequence.Run(context, deltaTimeInSeconds);
+			if (_sequence.IsComplete())
 			{
 				_sequence.OnExit();
-				_completed = true;
+				// Re-arm for the next event occurrence
+				_triggered = false;
+				_event.OnEnter();
 			}
 		}
 
 		public void OnExit()
 		{
-			if (_sequence != null && !_sequence.IsComplete())
-			{
+			if (!_sequence.IsComplete())
 				_sequence.OnExit();
-			}
 		}
 
-		public Boolean IsComplete() => _completed;
+		// This block never completes; it keeps listening for events and triggering the sequence
+		public Boolean IsComplete() => false;
 	}
 }

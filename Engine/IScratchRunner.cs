@@ -14,6 +14,7 @@ namespace LunyScratch
 		void RepeatForeverPhysics(params IScratchBlock[] blocks);
 		// void RepeatWhileTrue(Func<Boolean> condition, params IScratchBlock[] blocks);
 		// void RepeatUntilTrue(Func<Boolean> condition, params IScratchBlock[] blocks);
-		void When(Func<Boolean> condition, params IScratchBlock[] blocks);
+		// void When(Func<Boolean> condition, params IScratchBlock[] blocks);
+		void When(EventBlock evt, params IScratchBlock[] blocks);
 	}
 }

@@ -24,7 +24,10 @@ namespace LunyScratch
 		// public static void RepeatUntilTrue(Func<Boolean> condition, params IScratchBlock[] blocks) =>
 		// 	GameEngine.Runtime.RepeatUntilTrue(condition, blocks);
 
-		public static void When(Func<Boolean> condition, params IScratchBlock[] blocks) =>
-			GameEngine.Runtime.When(condition, blocks);
+		// public static void When(Func<Boolean> condition, params IScratchBlock[] blocks) =>
+		// 	GameEngine.Runtime.When(condition, blocks);
+
+		public static void When(EventBlock evt, params IScratchBlock[] blocks) =>
+			GameEngine.Runtime.When(evt, blocks);
 	}
 }
