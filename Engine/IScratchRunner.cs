@@ -16,5 +16,7 @@ namespace LunyScratch
 		// void RepeatUntilTrue(Func<Boolean> condition, params IScratchBlock[] blocks);
 		// void When(Func<Boolean> condition, params IScratchBlock[] blocks);
 		void When(EventBlock evt, params IScratchBlock[] blocks);
+
+		Table Variables { get; }
 	}
 }

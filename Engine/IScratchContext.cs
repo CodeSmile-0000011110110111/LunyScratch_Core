@@ -20,7 +20,7 @@ namespace LunyScratch
 		/// <summary>
 		/// Gets the IAudioSource for this context. Returns null if no AudioSource component exists.
 		/// </summary>
-		IAudioSource AudioSource { get; }
+		IEngineAudio Audio { get; }
 
 		/// <summary>
 		/// Gets the current object as an engine-agnostic IEngineObject.

@@ -6,7 +6,7 @@ namespace LunyScratch
 	{
 		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
-			var audio = context?.AudioSource;
+			var audio = context?.Audio;
 			audio?.Play();
 		}
 
