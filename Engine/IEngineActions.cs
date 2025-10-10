@@ -5,7 +5,9 @@ namespace LunyScratch
 	internal interface IEngineActions
 	{
 		// DEBUG
-		void Log(String message);
+		void LogInfo(String message);
+		void LogWarn(String message);
+		void LogError(String message);
 
 		// LOOKS
 		void ShowMessage(String message, Double duration);
