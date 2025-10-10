@@ -1,10 +1,11 @@
 using System;
+using System.Globalization;
 
 namespace LunyScratch
 {
 	public enum ValueType
 	{
-		Nil = 0,
+		Null = 0,
 		Boolean,
 		Number,
 		String,
@@ -13,13 +14,14 @@ namespace LunyScratch
 	public class Variable
 	{
 		// Raised whenever the internal value changes. Emits the current numeric value.
-		public event Action<Double> OnValueChanged;
+		public event Action<Variable> OnValueChanged;
 		private ValueType _valueType;
 		private Double _number;
 		private String _string;
 
-		public ValueType Type => _valueType;
-		public Boolean IsNumeric => _valueType == ValueType.Number;
+		public ValueType ValueType => _valueType;
+		public Boolean IsNull => _valueType == ValueType.Null;
+		public Boolean IsNumber => _valueType == ValueType.Number;
 		public Boolean IsBoolean => _valueType == ValueType.Boolean;
 		public Boolean IsString => _valueType == ValueType.String;
 
@@ -30,28 +32,28 @@ namespace LunyScratch
 		public static implicit operator Variable(String v) => new(v);
 
 		// Arithmetic operators (numeric-only). If any operand is non-numeric, left operand is returned unchanged.
-		public static Variable operator +(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() + b.AsNumber()) : a;
-		public static Variable operator -(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() - b.AsNumber()) : a;
-		public static Variable operator *(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() * b.AsNumber()) : a;
-		public static Variable operator /(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() / b.AsNumber()) : a;
-		public static Variable operator %(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() % b.AsNumber()) : a;
+		public static Variable operator +(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.AsNumber() + b.AsNumber()) : a;
+		public static Variable operator -(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.AsNumber() - b.AsNumber()) : a;
+		public static Variable operator *(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.AsNumber() * b.AsNumber()) : a;
+		public static Variable operator /(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.AsNumber() / b.AsNumber()) : a;
+		public static Variable operator %(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.AsNumber() % b.AsNumber()) : a;
 
-		public static Variable operator +(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() + b) : a;
-		public static Variable operator -(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() - b) : a;
-		public static Variable operator *(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() * b) : a;
-		public static Variable operator /(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() / b) : a;
-		public static Variable operator %(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() % b) : a;
+		public static Variable operator +(Variable a, Double b) => a.IsNumber ? new Variable(a.AsNumber() + b) : a;
+		public static Variable operator -(Variable a, Double b) => a.IsNumber ? new Variable(a.AsNumber() - b) : a;
+		public static Variable operator *(Variable a, Double b) => a.IsNumber ? new Variable(a.AsNumber() * b) : a;
+		public static Variable operator /(Variable a, Double b) => a.IsNumber ? new Variable(a.AsNumber() / b) : a;
+		public static Variable operator %(Variable a, Double b) => a.IsNumber ? new Variable(a.AsNumber() % b) : a;
 
-		public static Variable operator +(Double a, Variable b) => b.IsNumeric ? new Variable(a + b.AsNumber()) : b;
-		public static Variable operator -(Double a, Variable b) => b.IsNumeric ? new Variable(a - b.AsNumber()) : b;
-		public static Variable operator *(Double a, Variable b) => b.IsNumeric ? new Variable(a * b.AsNumber()) : b;
-		public static Variable operator /(Double a, Variable b) => b.IsNumeric ? new Variable(a / b.AsNumber()) : b;
-		public static Variable operator %(Double a, Variable b) => b.IsNumeric ? new Variable(a % b.AsNumber()) : b;
+		public static Variable operator +(Double a, Variable b) => b.IsNumber ? new Variable(a + b.AsNumber()) : b;
+		public static Variable operator -(Double a, Variable b) => b.IsNumber ? new Variable(a - b.AsNumber()) : b;
+		public static Variable operator *(Double a, Variable b) => b.IsNumber ? new Variable(a * b.AsNumber()) : b;
+		public static Variable operator /(Double a, Variable b) => b.IsNumber ? new Variable(a / b.AsNumber()) : b;
+		public static Variable operator %(Double a, Variable b) => b.IsNumber ? new Variable(a % b.AsNumber()) : b;
 
 		public static Variable operator +(Variable a) => a;
-		public static Variable operator -(Variable a) => a.IsNumeric ? new Variable(-a.AsNumber()) : a;
+		public static Variable operator -(Variable a) => a.IsNumber ? new Variable(-a.AsNumber()) : a;
+		public static Boolean operator !=(Variable a, Variable b) => !(a == b);
 
-		// Equality operators (numeric compare for numeric types; string compare for strings)
 		public static Boolean operator ==(Variable a, Variable b)
 		{
 			var aIsNull = ReferenceEquals(a, null);
@@ -60,50 +62,27 @@ namespace LunyScratch
 				return true;
 			if (aIsNull || bIsNull)
 				return false;
+			if (a.ValueType != b.ValueType)
+				return false;
 			if (a._valueType == ValueType.Number && b._valueType == ValueType.Number)
 				return a.AsNumber() == b.AsNumber();
 			if (a._valueType == ValueType.Boolean && b._valueType == ValueType.Boolean)
 				return a.AsBoolean() == b.AsBoolean();
 			if (a._valueType == ValueType.String && b._valueType == ValueType.String)
-				return String.Equals(a._string ?? String.Empty, b._string ?? String.Empty, StringComparison.Ordinal);
+				return String.Equals(a._string, b._string, StringComparison.Ordinal);
 
 			return false;
 		}
 
-		public static Boolean operator !=(Variable a, Variable b) => !(a == b);
-
-		public Variable(Boolean truthValue)
-		{
-			_valueType = ValueType.Boolean;
-			_number = truthValue ? 1 : 0;
-			_string = null;
-		}
-
-		public Variable(Double number)
-		{
-			_valueType = ValueType.Number;
-			_number = number;
-			_string = null;
-		}
-
-		public Variable(String text)
-		{
-			_valueType = ValueType.String;
-			_number = 0;
-			_string = text == null ? String.Empty : text;
-		}
+		public Variable(Variable value) => Set(value);
+		public Variable(Double number) => Set(number);
+		public Variable(Boolean truthValue) => Set(truthValue);
+		public Variable(String text) => Set(text);
 
 		public Double AsNumber() => _valueType switch
 		{
 			ValueType.Boolean or ValueType.Number => _number,
 			var _ => 0.0,
-		};
-
-		public String AsString() => _valueType switch
-		{
-			ValueType.Boolean or ValueType.Number => _number.ToString(),
-			ValueType.String => _string ?? String.Empty,
-			var _ => String.Empty,
 		};
 
 		public Boolean AsBoolean() => _valueType switch
@@ -112,51 +91,81 @@ namespace LunyScratch
 			var _ => false,
 		};
 
+		public String AsString() => _valueType switch
+		{
+			ValueType.Boolean or ValueType.Number => _number.ToString(CultureInfo.InvariantCulture),
+			ValueType.String => _string ?? String.Empty,
+			ValueType.Null => "(null)",
+			var _ => throw new ArgumentOutOfRangeException(nameof(_valueType), _valueType.ToString()),
+		};
+
+		public void Set(Variable value)
+		{
+			if (value == null)
+			{
+				_valueType = ValueType.Null;
+				_number = 0;
+				_string = null;
+				OnValueChanged?.Invoke(this);
+			}
+			else
+			{
+				_valueType = value._valueType;
+				_number = value._number;
+				_string = value._string;
+				OnValueChanged?.Invoke(this);
+			}
+		}
+
 		public void Set(Double number)
 		{
 			_valueType = ValueType.Number;
 			_number = number;
-			OnValueChanged?.Invoke(AsNumber());
+			_string = null;
+			OnValueChanged?.Invoke(this);
 		}
 
 		public void Set(Boolean truthValue)
 		{
 			_valueType = ValueType.Boolean;
 			_number = truthValue ? 1 : 0;
-			OnValueChanged?.Invoke(AsNumber());
+			_string = null;
+			OnValueChanged?.Invoke(this);
 		}
 
 		public void Set(String text)
 		{
 			_valueType = ValueType.String;
 			_string = text;
-			OnValueChanged?.Invoke(AsNumber());
+			_number = 0;
+			OnValueChanged?.Invoke(this);
 		}
 
-		// Increment numeric values. No-op if non-numeric (e.g., String).
-		public void Add(Double amount)
+		public void Add(Variable amount)
 		{
-			if (IsNumeric)
-			{
-				_number += amount;
-				OnValueChanged?.Invoke(AsNumber());
-			}
-		}
+			if (amount == null)
+				return;
 
-		public void Increment() => Add(1.0);
+			if (IsNumber)
+				Set(_number + amount.AsNumber());
+			else if (IsString)
+				Set(_string + amount.AsString());
+		}
 
 		public override String ToString() => _valueType switch
 		{
 			ValueType.Boolean => $"Boolean({_number != 0})",
 			ValueType.Number => $"Number({_number})",
 			ValueType.String => $"String({_string ?? String.Empty})",
-			var _ => "Nil()",
+			ValueType.Null => "Variable(null)",
+			var _ => throw new ArgumentOutOfRangeException(nameof(_valueType), _valueType.ToString()),
 		};
 
 		public override Boolean Equals(Object obj) => obj switch
 		{
 			Variable v => this == v,
 			Int32 i => Equals(i),
+			Int64 i => Equals(i),
 			Single f => Equals(f),
 			Double d => Equals(d),
 			Boolean b => Equals(b),
@@ -164,17 +173,14 @@ namespace LunyScratch
 			var _ => false,
 		};
 
-		public override Int32 GetHashCode() => _valueType switch
-		{
-			ValueType.String => AsString().GetHashCode(),
-			var _ => AsNumber().GetHashCode(),
-		};
+		public override Int32 GetHashCode() => HashCode.Combine(_valueType, _number, _string);
 
 		// IEquatable implementations
 		public Boolean Equals(Variable other) => this == other;
-		public Boolean Equals(Int32 other) => IsNumeric && AsNumber().Equals(other);
-		public Boolean Equals(Single other) => IsNumeric && AsNumber().Equals(other);
-		public Boolean Equals(Double other) => IsNumeric && AsNumber().Equals(other);
+		public Boolean Equals(Int32 other) => IsNumber && AsNumber().Equals(other);
+		public Boolean Equals(Int64 other) => IsNumber && AsNumber().Equals(other);
+		public Boolean Equals(Single other) => IsNumber && AsNumber().Equals(other);
+		public Boolean Equals(Double other) => IsNumber && AsNumber().Equals(other);
 		public Boolean Equals(Boolean other) => IsBoolean && AsBoolean().Equals(other);
 
 		public Boolean Equals(String other) =>

@@ -39,7 +39,7 @@ namespace LunyScratch
 			if (_dictionary.TryGetValue(variableName, out var existing) && existing != null)
 			{
 				// Mutate in place to preserve subscriptions and raise change events
-				switch (value?.Type)
+				switch (value?.ValueType)
 				{
 					case ValueType.Boolean:
 						existing.Set(value.AsBoolean());
@@ -50,19 +50,13 @@ namespace LunyScratch
 					case ValueType.String:
 						existing.Set(value.AsString());
 						break;
-					default:
-						// Keep existing; no change for Nil
-						break;
 				}
 				return existing;
 			}
-			else
-			{
-				// New entry: ensure we store a non-null Variable instance
-				var stored = value ?? new Variable(0.0);
-				_dictionary[variableName] = stored;
-				return stored;
-			}
+			// New entry: ensure we store a non-null Variable instance
+			var stored = value ?? new Variable(0.0);
+			_dictionary[variableName] = stored;
+			return stored;
 		}
 
 		public Boolean Has(String key) => String.IsNullOrEmpty(key) == false && _dictionary.ContainsKey(key);
@@ -74,13 +68,10 @@ namespace LunyScratch
 				return;
 
 			if (!_dictionary.TryGetValue(variableName, out var current))
-				current = new Variable(0.0);
+				current = Set(variableName, new Variable(0.0));
 
-			if (current.IsNumeric)
-			{
-				current.Add(amount.AsNumber());
-				_dictionary[variableName] = current;
-			}
+			if (current.IsNumber)
+				current.Add(amount);
 			else
 				GameEngine.Actions.LogWarn($"IncrementVariable: variable '{variableName}' is not numeric; no change applied.");
 		}
