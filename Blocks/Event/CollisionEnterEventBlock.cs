@@ -18,6 +18,6 @@ namespace LunyScratch
 		}
 
 		internal override Boolean Evaluate(IScratchContext context) =>
-			context is IEventContext evt && evt.QueryCollisionEnterEvents(_nameFilter, _tagFilter);
+			context != null && context.QueryCollisionEnterEvents(_nameFilter, _tagFilter);
 	}
 }

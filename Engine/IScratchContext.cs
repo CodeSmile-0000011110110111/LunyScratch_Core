@@ -26,6 +26,7 @@ namespace LunyScratch
 		/// Gets the current object as an engine-agnostic IEngineObject.
 		/// </summary>
 		IEngineObject Self { get; }
+		IScratchRunner Runner { get; }
 
 		void ScheduleDestroy();
 
@@ -36,5 +37,11 @@ namespace LunyScratch
 		/// Results are cached by name for performance.
 		/// </summary>
 		IEngineObject FindChild(String name);
+
+		/// <summary>
+		/// Attempts to consume a queued collision-enter event matching optional name/tag filters.
+		/// Returns true if an event was found and consumed.
+		/// </summary>
+		Boolean QueryCollisionEnterEvents(String nameFilter, String tagFilter);
 	}
 }
