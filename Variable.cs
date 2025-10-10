@@ -10,8 +10,10 @@ namespace LunyScratch
 		String,
 	}
 
-	public struct Variable
+	public class Variable
 	{
+		// Raised whenever the internal value changes. Emits the current numeric value.
+		public event Action<Double> OnValueChanged;
 		private ValueType _valueType;
 		private Double _number;
 		private String _string;
@@ -20,6 +22,55 @@ namespace LunyScratch
 		public Boolean IsNumeric => _valueType == ValueType.Number;
 		public Boolean IsBoolean => _valueType == ValueType.Boolean;
 		public Boolean IsString => _valueType == ValueType.String;
+
+		public static implicit operator Variable(Int32 v) => new(v);
+		public static implicit operator Variable(Single v) => new(v);
+		public static implicit operator Variable(Double v) => new(v);
+		public static implicit operator Variable(Boolean v) => new(v);
+		public static implicit operator Variable(String v) => new(v);
+
+		// Arithmetic operators (numeric-only). If any operand is non-numeric, left operand is returned unchanged.
+		public static Variable operator +(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() + b.AsNumber()) : a;
+		public static Variable operator -(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() - b.AsNumber()) : a;
+		public static Variable operator *(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() * b.AsNumber()) : a;
+		public static Variable operator /(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() / b.AsNumber()) : a;
+		public static Variable operator %(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() % b.AsNumber()) : a;
+
+		public static Variable operator +(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() + b) : a;
+		public static Variable operator -(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() - b) : a;
+		public static Variable operator *(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() * b) : a;
+		public static Variable operator /(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() / b) : a;
+		public static Variable operator %(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() % b) : a;
+
+		public static Variable operator +(Double a, Variable b) => b.IsNumeric ? new Variable(a + b.AsNumber()) : b;
+		public static Variable operator -(Double a, Variable b) => b.IsNumeric ? new Variable(a - b.AsNumber()) : b;
+		public static Variable operator *(Double a, Variable b) => b.IsNumeric ? new Variable(a * b.AsNumber()) : b;
+		public static Variable operator /(Double a, Variable b) => b.IsNumeric ? new Variable(a / b.AsNumber()) : b;
+		public static Variable operator %(Double a, Variable b) => b.IsNumeric ? new Variable(a % b.AsNumber()) : b;
+
+		public static Variable operator +(Variable a) => a;
+		public static Variable operator -(Variable a) => a.IsNumeric ? new Variable(-a.AsNumber()) : a;
+
+		// Equality operators (numeric compare for numeric types; string compare for strings)
+		public static Boolean operator ==(Variable a, Variable b)
+		{
+			var aIsNull = ReferenceEquals(a, null);
+			var bIsNull = ReferenceEquals(b, null);
+			if (aIsNull && bIsNull)
+				return true;
+			if (aIsNull || bIsNull)
+				return false;
+			if (a._valueType == ValueType.Number && b._valueType == ValueType.Number)
+				return a.AsNumber() == b.AsNumber();
+			if (a._valueType == ValueType.Boolean && b._valueType == ValueType.Boolean)
+				return a.AsBoolean() == b.AsBoolean();
+			if (a._valueType == ValueType.String && b._valueType == ValueType.String)
+				return String.Equals(a._string ?? String.Empty, b._string ?? String.Empty, StringComparison.Ordinal);
+
+			return false;
+		}
+
+		public static Boolean operator !=(Variable a, Variable b) => !(a == b);
 
 		public Variable(Boolean truthValue)
 		{
@@ -65,28 +116,34 @@ namespace LunyScratch
 		{
 			_valueType = ValueType.Number;
 			_number = number;
+			OnValueChanged?.Invoke(AsNumber());
 		}
 
 		public void Set(Boolean truthValue)
 		{
 			_valueType = ValueType.Boolean;
 			_number = truthValue ? 1 : 0;
+			OnValueChanged?.Invoke(AsNumber());
 		}
 
 		public void Set(String text)
 		{
 			_valueType = ValueType.String;
 			_string = text;
+			OnValueChanged?.Invoke(AsNumber());
 		}
 
-		// Increment numeric values (Boolean treated as 1/0). No-op if non-numeric (e.g., String).
-		public void Increment(Double amount)
+		// Increment numeric values. No-op if non-numeric (e.g., String).
+		public void Add(Double amount)
 		{
 			if (IsNumeric)
+			{
 				_number += amount;
+				OnValueChanged?.Invoke(AsNumber());
+			}
 		}
 
-		public void Increment(Variable amount) => Increment(amount.AsNumber());
+		public void Increment() => Add(1.0);
 
 		public override String ToString() => _valueType switch
 		{
@@ -95,45 +152,6 @@ namespace LunyScratch
 			ValueType.String => $"String({_string ?? String.Empty})",
 			var _ => "Nil()",
 		};
-
-		public static implicit operator Variable(Int32 v) => new(v);
-		public static implicit operator Variable(Single v) => new(v);
-		public static implicit operator Variable(Double v) => new(v);
-		public static implicit operator Variable(Boolean v) => new(v);
-		public static implicit operator Variable(String v) => new(v);
-
-		// Arithmetic operators (numeric-only). If any operand is non-numeric, left operand is returned unchanged.
-		public static Variable operator +(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() + b.AsNumber()) : a;
-		public static Variable operator -(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() - b.AsNumber()) : a;
-		public static Variable operator *(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() * b.AsNumber()) : a;
-		public static Variable operator /(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() / b.AsNumber()) : a;
-		public static Variable operator %(Variable a, Variable b) => a.IsNumeric && b.IsNumeric ? new Variable(a.AsNumber() % b.AsNumber()) : a;
-
-		public static Variable operator +(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() + b) : a;
-		public static Variable operator -(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() - b) : a;
-		public static Variable operator *(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() * b) : a;
-		public static Variable operator /(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() / b) : a;
-		public static Variable operator %(Variable a, Double b) => a.IsNumeric ? new Variable(a.AsNumber() % b) : a;
-
-		public static Variable operator +(Double a, Variable b) => b.IsNumeric ? new Variable(a + b.AsNumber()) : b;
-		public static Variable operator -(Double a, Variable b) => b.IsNumeric ? new Variable(a - b.AsNumber()) : b;
-		public static Variable operator *(Double a, Variable b) => b.IsNumeric ? new Variable(a * b.AsNumber()) : b;
-		public static Variable operator /(Double a, Variable b) => b.IsNumeric ? new Variable(a / b.AsNumber()) : b;
-		public static Variable operator %(Double a, Variable b) => b.IsNumeric ? new Variable(a % b.AsNumber()) : b;
-
-		public static Variable operator +(Variable a) => a;
-		public static Variable operator -(Variable a) => a.IsNumeric ? new Variable(-a.AsNumber()) : a;
-
-		// Equality operators (numeric compare for numeric types; string compare for strings)
-		public static Boolean operator ==(Variable a, Variable b)
-		{
-			if (a._valueType == ValueType.String && b._valueType == ValueType.String)
-				return String.Equals(a._string ?? String.Empty, b._string ?? String.Empty, StringComparison.Ordinal);
-
-			return a.AsNumber().Equals(b.AsNumber());
-		}
-
-		public static Boolean operator !=(Variable a, Variable b) => !(a == b);
 
 		public override Boolean Equals(Object obj) => obj switch
 		{

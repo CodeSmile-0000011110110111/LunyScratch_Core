@@ -18,10 +18,5 @@ namespace LunyScratch
 		/// Increments a numeric variable by the provided value's numeric form. Creates the variable if it does not exist.
 		/// </summary>
 		public static IScratchBlock IncrementVariable(String name, Variable value) => new IncrementVariableBlock(name, value);
-
-		/// <summary>
-		/// Changes a numeric variable by the given delta. Creates the variable if it does not exist.
-		/// </summary>
-		public static IScratchBlock ChangeVariable(String name, Variable initialValue, Double changeValue) => new ChangeVariableBlock(name, initialValue, changeValue);
 	}
 }

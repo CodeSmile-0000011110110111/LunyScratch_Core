@@ -11,69 +11,78 @@ namespace LunyScratch
 		// 1-indexed!
 		private readonly List<Variable> _array = new();
 		private readonly Dictionary<String, Variable> _dictionary = new();
+		public Variable this[String variableName] { get => Get(variableName); set => Set(variableName, value); }
+		public Variable this[Int32 index] { get => Get(index); set => Set(index, value); }
 
-		// Array operations (1-indexed like Scratch/Lua)
-		public void Add(Variable value) => _array.Add(value);
+		public Int32 ArrayLength() => _array.Count;
+		public Int32 ValueCount() => _array.Count + _dictionary.Count;
 
-		public Variable Get(Int32 index) => index <= 0 || index > _array.Count ? new Variable(0) : _array[index - 1];
+		public Variable Get(Int32 index) => index > 1 && index <= _array.Count ? _array[index - 1] : default;
 
-		public void Set(Int32 index, Variable value)
+		public Variable Set(Int32 index, Variable value)
 		{
 			if (index > 0 && index <= _array.Count)
 				_array[index - 1] = value;
+			return value;
 		}
 
-		public Int32 Length() => _array.Count;
-
 		// Dictionary operations
-		public Variable Get(String key) => String.IsNullOrEmpty(key) && _dictionary.TryGetValue(key, out var v) ? v : default;
+		public Variable Get(String variableName) =>
+			!String.IsNullOrEmpty(variableName) && _dictionary.TryGetValue(variableName, out var v) ? v : null;
 
 		// Lazy initialize: if key doesn't exist, create entry
-		public void Set(String key, Variable value)
+		public Variable Set(String variableName, Variable value)
 		{
-			if (!String.IsNullOrEmpty(key))
-				_dictionary[key] = value;
+			if (String.IsNullOrEmpty(variableName))
+				return null;
+
+			if (_dictionary.TryGetValue(variableName, out var existing) && existing != null)
+			{
+				// Mutate in place to preserve subscriptions and raise change events
+				switch (value?.Type)
+				{
+					case ValueType.Boolean:
+						existing.Set(value.AsBoolean());
+						break;
+					case ValueType.Number:
+						existing.Set(value.AsNumber());
+						break;
+					case ValueType.String:
+						existing.Set(value.AsString());
+						break;
+					default:
+						// Keep existing; no change for Nil
+						break;
+				}
+				return existing;
+			}
+			else
+			{
+				// New entry: ensure we store a non-null Variable instance
+				var stored = value ?? new Variable(0.0);
+				_dictionary[variableName] = stored;
+				return stored;
+			}
 		}
 
 		public Boolean Has(String key) => String.IsNullOrEmpty(key) == false && _dictionary.ContainsKey(key);
 
 		// Increment a named variable by amount (numeric). Creates the variable if missing. Warns if incompatible.
-		public void Increment(String key, Variable amount)
+		public void Increment(String variableName, Variable amount)
 		{
-			if (String.IsNullOrEmpty(key))
+			if (String.IsNullOrEmpty(variableName))
 				return;
 
-			if (!_dictionary.TryGetValue(key, out var current))
+			if (!_dictionary.TryGetValue(variableName, out var current))
 				current = new Variable(0.0);
 
 			if (current.IsNumeric)
 			{
-				current.Increment(amount);
-				_dictionary[key] = current;
+				current.Add(amount.AsNumber());
+				_dictionary[variableName] = current;
 			}
 			else
-				GameEngine.Actions.LogWarn($"IncrementVariable: variable '{key}' is not numeric; no change applied.");
-		}
-
-		// Change a named variable by delta (Double). If missing, initialize from initialValue. Warn if incompatible.
-		public void Change(String key, Variable initialValue, Double delta)
-		{
-			if (String.IsNullOrEmpty(key))
-				return;
-
-			if (!_dictionary.TryGetValue(key, out var current))
-			{
-				current = initialValue;
-				_dictionary[key] = current;
-			}
-
-			if (current.Type != ValueType.String)
-			{
-				current.Increment(delta);
-				_dictionary[key] = current;
-			}
-			else
-				GameEngine.Actions.LogWarn($"ChangeVariable: variable '{key}' is a string; cannot change numerically.");
+				GameEngine.Actions.LogWarn($"IncrementVariable: variable '{variableName}' is not numeric; no change applied.");
 		}
 
 		public override String ToString() => $"Table(arr={_array.Count}, dict={_dictionary.Count})";
