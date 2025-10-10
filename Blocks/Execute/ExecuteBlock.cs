@@ -13,6 +13,7 @@ namespace LunyScratch
 			_action = action;
 			_executed = false;
 		}
+
 		public void OnEnter() => _executed = false;
 
 		public void Run(IScratchContext context, Double deltaTimeInSeconds)

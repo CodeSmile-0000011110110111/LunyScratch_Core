@@ -13,6 +13,7 @@ namespace LunyScratch
 
 		// Array operations (1-indexed like Scratch/Lua)
 		public void Add(Variable value) => _array.Add(value);
+
 		public Variable Get(Int32 index)
 		{
 			if (index < 0 || index >= _array.Count)

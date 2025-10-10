@@ -1,7 +1,4 @@
 ﻿namespace LunyScratch
 {
-	public interface IEngineComponent
-	{
-		
-	}
+	public interface IEngineComponent {}
 }

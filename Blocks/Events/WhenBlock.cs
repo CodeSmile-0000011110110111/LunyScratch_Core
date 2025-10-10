@@ -5,8 +5,8 @@ namespace LunyScratch
 	internal sealed class WhenBlock : IScratchBlock
 	{
 		private readonly EventBlock _event;
-		private Boolean _triggered;
 		private readonly SequenceBlock _sequence;
+		private Boolean _triggered;
 
 		public WhenBlock(EventBlock evt, params IScratchBlock[] blocks)
 		{
