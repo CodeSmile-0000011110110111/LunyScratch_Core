@@ -26,5 +26,8 @@ namespace LunyScratch
 		Boolean IsMouseButtonPressed(MouseButton button);
 		Boolean IsMouseButtonJustPressed(MouseButton button);
 		Boolean IsMouseButtonJustReleased(MouseButton button);
+
+		// OBJECTS
+		IEngineObject InstantiatePrefab(IEnginePrefabAsset prefab, ITransform likeTransform);
 	}
 }

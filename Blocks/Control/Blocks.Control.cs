@@ -11,5 +11,6 @@ namespace LunyScratch
 		public static IScratchBlock Disable(String childName) => new DisableObjectBlock(childName);
 		public static IScratchBlock Disable() => new DisableObjectBlock(null);
 		public static IScratchBlock DestroySelf() => new DestroySelfBlock();
+		public static IScratchBlock InstantiatePrefab(String prefabPath) => new InstantiatePrefabBlock(prefabPath);
 	}
 }
