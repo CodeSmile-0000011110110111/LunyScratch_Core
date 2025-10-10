@@ -66,7 +66,7 @@ namespace LunyScratch
 				current = initialValue;
 				_dictionary[key] = current;
 			}
-			
+
 			if (current.Type != ValueType.String)
 			{
 				current.Increment(delta);
