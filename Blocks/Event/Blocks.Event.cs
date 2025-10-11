@@ -19,5 +19,9 @@ namespace LunyScratch
 		/// Creates a CollisionEnter event provider.
 		/// </summary>
 		public static EventBlock CollisionEnter(String name = null, String tag = null) => new CollisionEnterEventBlock(name, tag);
+		/// <summary>
+		/// Creates a ButtonClicked event provider for a given menu button name.
+		/// </summary>
+		public static EventBlock ButtonClicked(String buttonName) => new ButtonClickedEventBlock(buttonName);
 	}
 }

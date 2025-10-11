@@ -28,6 +28,12 @@ namespace LunyScratch
 		IEngineObject Self { get; }
 		IScratchRunner Runner { get; }
 
+		/// <summary>
+		/// Provides engine-agnostic UI accessors. Implementations should return a new adapter instance per call.
+		/// </summary>
+		IEngineHUD GetEngineHUD();
+		IEngineMenu GetEngineMenu();
+		
 		void ScheduleDestroy();
 
 		/// <summary>

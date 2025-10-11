@@ -1,31 +1,31 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace LunyScratch
 {
 	public sealed class IfBlock : IScratchBlock
 	{
 		private readonly ConditionBlock _conditionBlock;
-		private readonly List<IScratchBlock> _thenBlocks;
-		private readonly List<IScratchBlock> _elseBlocks;
-		private List<IScratchBlock> _currentBlocks;
+		private readonly IScratchBlock[] _thenBlocks;
+		private IScratchBlock[] _elseBlocks;
+		private IScratchBlock[] _currentBlocks;
 		private Int32 _currentIndex;
 		private Boolean _completed;
 
-		public IfBlock(Func<Boolean> condition, List<IScratchBlock> thenBlocks)
+		public IfBlock(Func<Boolean> condition, params IScratchBlock[] thenBlocks)
 		{
 			_conditionBlock = new ConditionBlock(condition);
-			_thenBlocks = thenBlocks;
-			_elseBlocks = new List<IScratchBlock>();
+			_thenBlocks = thenBlocks ?? Array.Empty<IScratchBlock>();
+			_elseBlocks = Array.Empty<IScratchBlock>();
 			_currentIndex = 0;
 			_completed = false;
 		}
 
-		public IfBlock(ConditionBlock condition, List<IScratchBlock> thenBlocks)
+		public IfBlock(ConditionBlock condition, params IScratchBlock[] thenBlocks)
 		{
 			_conditionBlock = condition;
-			_thenBlocks = thenBlocks;
-			_elseBlocks = new List<IScratchBlock>();
+			_thenBlocks = thenBlocks ?? Array.Empty<IScratchBlock>();
+			_elseBlocks = Array.Empty<IScratchBlock>();
 			_currentIndex = 0;
 			_completed = false;
 		}
@@ -39,7 +39,7 @@ namespace LunyScratch
 			_currentBlocks = _conditionBlock.Evaluate() ? _thenBlocks : _elseBlocks;
 
 			// If we have blocks to execute, enter the first one
-			if (_currentBlocks.Count > 0)
+			if (_currentBlocks.Length > 0)
 				_currentBlocks[0].OnEnter();
 			else
 				_completed = true; // No blocks to execute
@@ -47,7 +47,7 @@ namespace LunyScratch
 
 		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
-			if (_completed || _currentBlocks.Count == 0) return;
+			if (_completed || _currentBlocks.Length == 0) return;
 
 			var currentBlock = _currentBlocks[_currentIndex];
 			currentBlock.Run(context, deltaTimeInSeconds);
@@ -58,7 +58,7 @@ namespace LunyScratch
 				_currentIndex++;
 
 				// Check if we've completed all blocks
-				if (_currentIndex >= _currentBlocks.Count)
+				if (_currentIndex >= _currentBlocks.Length)
 				{
 					_completed = true;
 					return;
@@ -71,7 +71,7 @@ namespace LunyScratch
 
 		public void OnExit()
 		{
-			if (_currentBlocks != null && _currentIndex < _currentBlocks.Count)
+			if (_currentBlocks != null && _currentIndex < _currentBlocks.Length)
 				_currentBlocks[_currentIndex].OnExit();
 		}
 
@@ -79,7 +79,10 @@ namespace LunyScratch
 
 		public IfBlock Else(params IScratchBlock[] blocks)
 		{
-			_elseBlocks.AddRange(blocks);
+			if (blocks == null || blocks.Length == 0) return this;
+			_elseBlocks = _elseBlocks == null || _elseBlocks.Length == 0
+				? blocks
+				: _elseBlocks.Concat(blocks).ToArray();
 			return this;
 		}
 	}

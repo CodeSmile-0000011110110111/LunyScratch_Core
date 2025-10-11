@@ -12,5 +12,11 @@ namespace LunyScratch
 		public static IScratchBlock Disable() => new DisableObjectBlock(null);
 		public static IScratchBlock DestroySelf() => new DestroySelfBlock();
 		public static IScratchBlock InstantiatePrefab(String prefabPath) => new InstantiatePrefabBlock(prefabPath);
+		public static IScratchBlock ShowHUD() => new ShowHUDBlock();
+		public static IScratchBlock HideHUD() => new HideHUDBlock();
+		public static IScratchBlock ShowMenu() => new ShowMenuBlock();
+		public static IScratchBlock HideMenu() => new HideMenuBlock();
+		public static IScratchBlock ReloadCurrentScene() => new ReloadCurrentSceneBlock();
+		public static IScratchBlock QuitApplication() => new QuitApplicationBlock();
 	}
 }

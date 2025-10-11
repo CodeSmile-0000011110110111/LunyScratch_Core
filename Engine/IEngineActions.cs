@@ -29,5 +29,9 @@ namespace LunyScratch
 
 		// OBJECTS
 		IEngineObject InstantiatePrefab(IEnginePrefabAsset prefab, ITransform likeTransform);
+
+		// APPLICATION / SCENE MANAGEMENT
+		void ReloadCurrentScene();
+		void QuitApplication();
 	}
 }
