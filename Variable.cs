@@ -11,7 +11,7 @@ namespace LunyScratch
 		String,
 	}
 
-	public class Variable
+	public sealed class Variable
 	{
 		// Raised whenever the internal value changes. Emits the current numeric value.
 		public event Action<Variable> OnValueChanged;
@@ -74,6 +74,7 @@ namespace LunyScratch
 			return false;
 		}
 
+		public Variable() => _valueType = ValueType.Null;
 		public Variable(Variable value) => Set(value);
 		public Variable(Double number) => Set(number);
 		public Variable(Boolean truthValue) => Set(truthValue);
@@ -141,15 +142,36 @@ namespace LunyScratch
 			OnValueChanged?.Invoke(this);
 		}
 
+		public void Add(Double amount)
+		{
+			if (IsNumber || IsNull)
+				Set(_number + amount);
+		}
+
 		public void Add(Variable amount)
 		{
 			if (amount == null)
 				return;
 
-			if (IsNumber)
+			if (IsNumber || IsNull)
 				Set(_number + amount.AsNumber());
 			else if (IsString)
 				Set(_string + amount.AsString());
+		}
+
+		public void Subtract(Double amount)
+		{
+			if (IsNumber || IsNull)
+				Set(_number - amount);
+		}
+
+		public void Subtract(Variable amount)
+		{
+			if (amount == null)
+				return;
+
+			if (IsNumber || IsNull)
+				Set(_number - amount.AsNumber());
 		}
 
 		public override String ToString() => _valueType switch

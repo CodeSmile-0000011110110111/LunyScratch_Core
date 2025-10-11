@@ -12,11 +12,12 @@ namespace LunyScratch
 		/// <summary>
 		/// Increments a numeric variable by 1. Creates the variable if it does not exist.
 		/// </summary>
-		public static IScratchBlock IncrementVariable(String name) => new IncrementVariableBlock(name, new Variable(1.0));
+		public static IScratchBlock IncrementVariable(String name) => new AddVariableBlock(name, 1.0);
 
 		/// <summary>
-		/// Increments a numeric variable by the provided value's numeric form. Creates the variable if it does not exist.
+		/// Decrements a numeric variable by 1. Creates the variable if it does not exist.
 		/// </summary>
-		public static IScratchBlock IncrementVariable(String name, Variable value) => new IncrementVariableBlock(name, value);
+		public static IScratchBlock DecrementVariable(String name) => new SubtractVariableBlock(name, 1.0);
+
 	}
 }

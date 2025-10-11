@@ -27,8 +27,17 @@ namespace LunyScratch
 		}
 
 		// Dictionary operations
-		public Variable Get(String variableName) =>
-			!String.IsNullOrEmpty(variableName) && _dictionary.TryGetValue(variableName, out var v) ? v : null;
+		public Variable Get(String variableName)
+		{
+			return !String.IsNullOrEmpty(variableName) && _dictionary.TryGetValue(variableName, out var v) ? v : CreateVariable(variableName);
+		}
+
+		private Variable CreateVariable(String variableName)
+		{
+			var variable = new Variable(0);
+			_dictionary[variableName] = variable;
+			return variable;
+		}
 
 		// Lazy initialize: if key doesn't exist, create entry
 		public Variable Set(String variableName, Variable value)
@@ -62,7 +71,7 @@ namespace LunyScratch
 		public Boolean Has(String key) => String.IsNullOrEmpty(key) == false && _dictionary.ContainsKey(key);
 
 		// Increment a named variable by amount (numeric). Creates the variable if missing. Warns if incompatible.
-		public void Increment(String variableName, Variable amount)
+		public void AddValue(String variableName, Variable amount)
 		{
 			if (String.IsNullOrEmpty(variableName))
 				return;
@@ -74,6 +83,10 @@ namespace LunyScratch
 				current.Add(amount);
 			else
 				GameEngine.Actions.LogWarn($"IncrementVariable: variable '{variableName}' is not numeric; no change applied.");
+		}
+		public void SubtractValue(String variableName, Variable amount)
+		{
+			AddValue(variableName, -amount);
 		}
 
 		public override String ToString() => $"Table(arr={_array.Count}, dict={_dictionary.Count})";

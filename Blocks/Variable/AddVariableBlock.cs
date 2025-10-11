@@ -3,12 +3,12 @@ using System;
 namespace LunyScratch
 {
 	// Increments a numeric variable by the provided amount (from Variable's numeric form)
-	internal sealed class IncrementVariableBlock : IScratchBlock
+	internal sealed class AddVariableBlock : IScratchBlock
 	{
 		private readonly string _name;
-		private readonly Variable _increment;
+		private readonly double _increment;
 
-		public IncrementVariableBlock(String name, Variable increment)
+		public AddVariableBlock(String name, double increment)
 		{
 			_name = name;
 			_increment = increment;
@@ -16,9 +16,12 @@ namespace LunyScratch
 
 		public void Run(IScratchContext context, double deltaTimeInSeconds)
 		{
-			var table = context?.Runner?.Variables;
-			if (table != null)
-				table.Increment(_name, _increment);
+			var variables = context?.Runner?.Variables;
+			if (variables != null)
+			{
+				var variable = variables.Get(_name);
+				variable.Add(_increment);
+			}
 		}
 
 		public bool IsComplete() => true;
