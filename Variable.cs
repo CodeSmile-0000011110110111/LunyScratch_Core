@@ -105,7 +105,8 @@ namespace LunyScratch
 
 		public String AsString() => _valueType switch
 		{
-			ValueType.Boolean or ValueType.Number => _number.ToString(CultureInfo.InvariantCulture),
+			ValueType.Boolean => AsBoolean().ToString(),
+			ValueType.Number => _number.ToString(CultureInfo.InvariantCulture),
 			ValueType.String => _string ?? String.Empty,
 			ValueType.Null => "(null)",
 			var _ => throw new ArgumentOutOfRangeException(nameof(_valueType), _valueType.ToString()),
