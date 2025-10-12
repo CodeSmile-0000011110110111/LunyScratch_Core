@@ -35,6 +35,7 @@ namespace LunyScratch
 		private Variable CreateVariable(String variableName)
 		{
 			var variable = new Variable(0);
+			variable.Name = variableName;
 			_dictionary[variableName] = variable;
 			return variable;
 		}
@@ -47,6 +48,8 @@ namespace LunyScratch
 
 			if (_dictionary.TryGetValue(variableName, out var existing) && existing != null)
 			{
+				// Ensure name is set and consistent
+				existing.Name = variableName;
 				// Mutate in place to preserve subscriptions and raise change events
 				switch (value?.ValueType)
 				{
@@ -64,6 +67,7 @@ namespace LunyScratch
 			}
 			// New entry: ensure we store a non-null Variable instance
 			var stored = value ?? new Variable(0.0);
+			stored.Name = variableName;
 			_dictionary[variableName] = stored;
 			return stored;
 		}

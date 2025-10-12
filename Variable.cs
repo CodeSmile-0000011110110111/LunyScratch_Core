@@ -18,12 +18,23 @@ namespace LunyScratch
 		private ValueType _valueType;
 		private Double _number;
 		private String _string;
+		private String _name;
 
 		public ValueType ValueType => _valueType;
 		public Boolean IsNull => _valueType == ValueType.Null;
 		public Boolean IsNumber => _valueType == ValueType.Number;
 		public Boolean IsBoolean => _valueType == ValueType.Boolean;
 		public Boolean IsString => _valueType == ValueType.String;
+
+		/// <summary>
+		/// Optional name for this variable. For dictionary variables, this matches the Table key.
+		/// Used as the sole source for GetHashCode to ensure uniqueness per name.
+		/// </summary>
+		public String Name
+		{
+			get => _name;
+			internal set => _name = value;
+		}
 
 		public static implicit operator Variable(Int32 v) => new(v);
 		public static implicit operator Variable(Single v) => new(v);
@@ -195,7 +206,7 @@ namespace LunyScratch
 			var _ => false,
 		};
 
-		public override Int32 GetHashCode() => HashCode.Combine(_valueType, _number, _string);
+		public override Int32 GetHashCode() => _name == null ? 0 : _name.GetHashCode();
 
 		// IEquatable implementations
 		public Boolean Equals(Variable other) => this == other;

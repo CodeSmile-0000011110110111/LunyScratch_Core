@@ -19,8 +19,7 @@ namespace LunyScratch
 			var variables = context?.Runner?.Variables;
 			if (variables != null)
 			{
-				var variable = variables.Get(_name);
-				variable.Add(_increment);
+				variables.AddValue(_name, _increment);
 			}
 		}
 
