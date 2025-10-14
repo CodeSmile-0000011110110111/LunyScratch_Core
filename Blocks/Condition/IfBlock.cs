@@ -90,6 +90,7 @@ namespace LunyScratch
 		public IfBlock Else(params IScratchBlock[] blocks)
 		{
 			if (blocks == null || blocks.Length == 0) return this;
+
 			_elseBlocks = _elseBlocks == null || _elseBlocks.Length == 0
 				? blocks
 				: _elseBlocks.Concat(blocks).ToArray();

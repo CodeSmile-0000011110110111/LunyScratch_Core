@@ -20,10 +20,7 @@ namespace LunyScratch
 			_result = false;
 		}
 
-		public void Run(IScratchContext context, Double deltaTimeInSeconds)
-		{
-			_result = _condition(context);
-		}
+		public void Run(IScratchContext context, Double deltaTimeInSeconds) => _result = _condition(context);
 
 		public Boolean IsComplete() => _result;
 
