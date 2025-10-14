@@ -3,7 +3,7 @@ using System;
 namespace LunyScratch
 {
 	/// <summary>
-	/// Condition block that compares a Variable (or a named variable in Table) to a numeric value
+	/// Condition block that compares a Variable (or a named variable in Table) to a value (Double or Variable)
 	/// using the specified ComparisonOperator. Non-numeric variables cause a warning and evaluate to false.
 	/// </summary>
 	internal sealed class IsVariableConditionBlock : ConditionBlock
@@ -11,15 +11,17 @@ namespace LunyScratch
 		private readonly Variable _variable;
 		private readonly String _variableName;
 		private readonly Double _value;
+		private readonly Variable _valueVar;
+		private readonly Boolean _useVarRhs;
 		private readonly ComparisonOperator _op;
-
-		// Compare a provided Variable instance
+	
+		// Compare a provided Variable instance against Double
 		public IsVariableConditionBlock(Variable variable, Double value, ComparisonOperator op)
 			: base(ctx =>
 			{
 				if (variable == null)
 					return false;
-
+			
 				if (!variable.IsNumber && !variable.IsNull)
 				{
 					// Non-numeric: warn and return false
@@ -27,7 +29,7 @@ namespace LunyScratch
 					GameEngine.Actions.LogWarn($"IsVariable: variable '{name}' is not numeric; comparison skipped.");
 					return false;
 				}
-
+			
 				var lhs = variable.Number;
 				return VariableMath.Compare(lhs, op, value);
 			})
@@ -35,29 +37,52 @@ namespace LunyScratch
 			_variable = variable;
 			_value = value;
 			_op = op;
+			_useVarRhs = false;
 		}
-
-		// Compare a named variable via context table
+	
+		// Compare a provided Variable instance against Variable
+		public IsVariableConditionBlock(Variable variable, Variable value, ComparisonOperator op)
+			: base(ctx =>
+			{
+				if (variable == null)
+					return false;
+				if (!variable.IsNumber && !variable.IsNull)
+				{
+					var name = variable.Name ?? "(unnamed)";
+					GameEngine.Actions.LogWarn($"IsVariable: variable '{name}' is not numeric; comparison skipped.");
+					return false;
+				}
+				var lhs = variable.Number;
+				return VariableMath.Compare(lhs, op, value);
+			})
+		{
+			_variable = variable;
+			_valueVar = value;
+			_op = op;
+			_useVarRhs = true;
+		}
+	
+		// Compare a named variable via context table against Double
 		public IsVariableConditionBlock(String variableName, Double value, ComparisonOperator op)
 			: base(ctx =>
 			{
 				if (ctx == null || ctx.Runner == null)
 					return false;
-
+			
 				var vars = ctx.Runner.Variables;
 				if (vars == null || String.IsNullOrEmpty(variableName))
 					return false;
-
+			
 				var v = vars.Get(variableName);
 				if (v == null)
 					return false;
-
+			
 				if (!v.IsNumber && !v.IsNull)
 				{
 					GameEngine.Actions.LogWarn($"IsVariable('{variableName}'): variable is not numeric; comparison skipped.");
 					return false;
 				}
-
+			
 				var lhs = v.Number;
 				return VariableMath.Compare(lhs, op, value);
 			})
@@ -65,6 +90,34 @@ namespace LunyScratch
 			_variableName = variableName;
 			_value = value;
 			_op = op;
+			_useVarRhs = false;
+		}
+	
+		// Compare a named variable via context table against Variable
+		public IsVariableConditionBlock(String variableName, Variable value, ComparisonOperator op)
+			: base(ctx =>
+			{
+				if (ctx == null || ctx.Runner == null)
+					return false;
+				var vars = ctx.Runner.Variables;
+				if (vars == null || String.IsNullOrEmpty(variableName))
+					return false;
+				var v = vars.Get(variableName);
+				if (v == null)
+					return false;
+				if (!v.IsNumber && !v.IsNull)
+				{
+					GameEngine.Actions.LogWarn($"IsVariable('{variableName}'): variable is not numeric; comparison skipped.");
+					return false;
+				}
+				var lhs = v.Number;
+				return VariableMath.Compare(lhs, op, value);
+			})
+		{
+			_variableName = variableName;
+			_valueVar = value;
+			_op = op;
+			_useVarRhs = true;
 		}
 	}
 }

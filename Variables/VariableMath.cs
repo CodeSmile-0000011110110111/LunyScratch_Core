@@ -58,6 +58,43 @@ namespace LunyScratch
 			target.Set(result);
 		}
 
+		// New overloads to accept Variable as the operand
+		internal static void Apply(Variable target, Variable operand, MathOperator op)
+		{
+			if (operand == null)
+			{
+				Apply(target, 0.0, op);
+				return;
+			}
+
+			if (op == MathOperator.Assign)
+			{
+    switch (operand.ValueType)
+				{
+					case ValueType.Number:
+						target.Set(operand.Number);
+						return;
+					case ValueType.Boolean:
+						target.Set(operand.Boolean);
+						return;
+					case ValueType.String:
+						target.Set(operand.String);
+						return;
+					default:
+						target.Set(0.0);
+						return;
+				}
+			}
+
+			if (!operand.IsNumber)
+			{
+				GameEngine.Actions.LogWarn("ModifyVariable: operand is not numeric; no change applied.");
+				return;
+			}
+
+			Apply(target, operand.Number, op);
+		}
+
 		internal static void ApplyByName(Table vars, String name, Double operand, MathOperator op)
 		{
 			if (vars == null || String.IsNullOrEmpty(name))
@@ -73,6 +110,15 @@ namespace LunyScratch
 			Apply(variable, operand, op);
 		}
 
+		internal static void ApplyByName(Table vars, String name, Variable operand, MathOperator op)
+		{
+			if (vars == null || String.IsNullOrEmpty(name))
+				return;
+
+			var variable = vars.Get(name);
+			Apply(variable, operand, op);
+		}
+
 		public static Boolean Compare(Double operand, ComparisonOperator op, Double value) => op switch
 		{
 			ComparisonOperator.Less => operand < value,
@@ -83,5 +129,19 @@ namespace LunyScratch
 			ComparisonOperator.GreaterOrEqual => operand >= value,
 			var _ => false,
 		};
+
+		public static Boolean Compare(Double operand, ComparisonOperator op, Variable rhs)
+		{
+			if (rhs == null)
+				return Compare(operand, op, 0.0);
+
+			if (!rhs.IsNumber)
+			{
+				GameEngine.Actions.LogWarn("IsVariable: right-hand side is not numeric; comparison skipped.");
+				return false;
+			}
+
+			return Compare(operand, op, rhs.Number);
+		}
 	}
 }
