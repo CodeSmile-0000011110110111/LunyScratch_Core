@@ -17,6 +17,6 @@ namespace LunyScratch
 		public RepeatWhileTrueBlock(ConditionBlock condition, List<IScratchBlock> blocks)
 			: base(condition, blocks) {}
 
-		protected override Boolean ShouldExitLoop() => !EvaluateCondition(); // Exit when condition becomes false
+		protected override Boolean ShouldExitLoop(IScratchContext context) => !EvaluateCondition(context); // Exit when condition becomes false
 	}
 }

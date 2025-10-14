@@ -3,7 +3,7 @@ using System;
 namespace LunyScratch
 {
 	// Action step (executes immediately)
-	public sealed class ExecuteBlock : IScratchBlock
+	public class ExecuteBlock : IScratchBlock
 	{
 		private readonly Action _action;
 		private Boolean _executed;

@@ -11,6 +11,7 @@ namespace LunyScratch
 		private IScratchBlock[] _currentBlocks;
 		private Int32 _currentIndex;
 		private Boolean _completed;
+		private Boolean _initialized;
 
 		public IfBlock(Func<Boolean> condition, params IScratchBlock[] thenBlocks)
 		{
@@ -19,6 +20,7 @@ namespace LunyScratch
 			_elseBlocks = Array.Empty<IScratchBlock>();
 			_currentIndex = 0;
 			_completed = false;
+			_initialized = false;
 		}
 
 		public IfBlock(ConditionBlock condition, params IScratchBlock[] thenBlocks)
@@ -28,26 +30,34 @@ namespace LunyScratch
 			_elseBlocks = Array.Empty<IScratchBlock>();
 			_currentIndex = 0;
 			_completed = false;
+			_initialized = false;
 		}
 
 		public void OnEnter()
 		{
 			_currentIndex = 0;
 			_completed = false;
-
-			// Evaluate condition and choose which blocks to execute
-			_currentBlocks = _conditionBlock.Evaluate() ? _thenBlocks : _elseBlocks;
-
-			// If we have blocks to execute, enter the first one
-			if (_currentBlocks.Length > 0)
-				_currentBlocks[0].OnEnter();
-			else
-				_completed = true; // No blocks to execute
+			_initialized = false;
+			_currentBlocks = Array.Empty<IScratchBlock>();
 		}
 
 		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
-			if (_completed || _currentBlocks.Length == 0) return;
+			if (_completed) return;
+
+			if (!_initialized)
+			{
+				_currentBlocks = _conditionBlock.Evaluate(context) ? _thenBlocks : _elseBlocks;
+				_initialized = true;
+
+				if (_currentBlocks.Length == 0)
+				{
+					_completed = true;
+					return;
+				}
+
+				_currentBlocks[0].OnEnter();
+			}
 
 			var currentBlock = _currentBlocks[_currentIndex];
 			currentBlock.Run(context, deltaTimeInSeconds);
