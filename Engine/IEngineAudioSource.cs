@@ -1,6 +1,6 @@
 namespace LunyScratch
 {
-	public interface IEngineAudio
+	public interface IEngineAudioSource
 	{
 		void Play();
 	}

@@ -20,13 +20,18 @@ namespace LunyScratch
 		/// <summary>
 		/// Gets the IAudioSource for this context. Returns null if no AudioSource component exists.
 		/// </summary>
-		IEngineAudio Audio { get; }
+		IEngineAudioSource Audio { get; }
 
 		/// <summary>
 		/// Gets the current object as an engine-agnostic IEngineObject.
 		/// </summary>
 		IEngineObject Self { get; }
 		IScratchRunner Runner { get; }
+		
+		/// <summary>
+		/// Gets the active camera for this context, if any.
+		/// </summary>
+		IEngineCamera ActiveCamera { get; }
 
 		/// <summary>
 		/// Provides engine-agnostic UI accessors. Implementations should return a new adapter instance per call.
