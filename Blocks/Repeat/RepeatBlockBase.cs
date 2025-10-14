@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net.Appender;
+using System;
 using System.Collections.Generic;
 
 namespace LunyScratch
@@ -10,13 +11,13 @@ namespace LunyScratch
 		protected readonly ConditionBlock _conditionBlock;
 		protected Int32 _currentIndex;
 		protected Boolean _shouldExit;
-
+		
 		protected RepeatBlockBase(ConditionBlock conditionBlock, List<IScratchBlock> blocks)
 		{
 			_conditionBlock = conditionBlock;
 			_blocks = blocks;
 		}
-
+		
 		protected RepeatBlockBase(ConditionBlock conditionBlock, params IScratchBlock[] blocks)
 		{
 			_conditionBlock = conditionBlock;
@@ -27,10 +28,10 @@ namespace LunyScratch
 		{
 			_currentIndex = 0;
 			_shouldExit = false;
-			
+			_entered = false;
 			// Defer condition evaluation until Run where context is available
 		}
-
+		
 		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
 			if (_shouldExit || _blocks.Count == 0) return;
@@ -42,41 +43,47 @@ namespace LunyScratch
 				return;
 			}
 			
+			// Process current block only; do not spin multiple iterations within the same frame.
 			var currentBlock = _blocks[_currentIndex];
-			// Ensure OnEnter has been called for the first block
-			if (deltaTimeInSeconds >= 0 && currentBlock != null && _currentIndex == 0 && !_entered)
+			
+			// Ensure first enter for current block
+			if (!_entered)
 			{
 				currentBlock.OnEnter();
 				_entered = true;
 			}
+			
 			currentBlock.Run(context, deltaTimeInSeconds);
 			
-			if (currentBlock.IsComplete())
+			if (!currentBlock.IsComplete())
+				return; // wait until next frame
+			
+			currentBlock.OnExit();
+			_currentIndex++;
+			
+			// Completed all blocks in the sequence for this iteration
+			if (_currentIndex >= _blocks.Count)
 			{
-				currentBlock.OnExit();
-				_currentIndex++;
-				
-				// Check if we've completed all blocks in the sequence
-				if (_currentIndex >= _blocks.Count)
+				// Evaluate exit condition at the end of the iteration
+				if (ShouldExitLoop(context))
 				{
-					// Check exit condition AFTER completing all blocks
-					if (ShouldExitLoop(context))
-					{
-						_shouldExit = true;
-						return;
-					}
-					
-					// Loop back to the beginning
-					_currentIndex = 0;
+					_shouldExit = true;
+					return;
 				}
 				
-				_blocks[_currentIndex].OnEnter();
+				// Loop back to the beginning but yield to next frame before continuing
+				_currentIndex = 0;
+				_entered = false;
+				return;
 			}
+			
+			// Prepare to enter the next block on the following Run
+			_entered = false; // so that the next Run calls OnEnter for the new current block
 		}
 		
 		public void OnExit()
 		{
-			if (_blocks.Count > 0 && _currentIndex < _blocks.Count)
+			if (_blocks.Count > 0 && _currentIndex < _blocks.Count && _entered)
 				_blocks[_currentIndex].OnExit();
 		}
 		

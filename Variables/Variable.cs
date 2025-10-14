@@ -137,9 +137,6 @@ namespace LunyScratch
 			_number = number;
 			_string = null;
 			OnValueChanged?.Invoke(this);
-
-			if (_name == "Score" || _name == "Progress")
-				GameEngine.Actions.LogInfo($"'{_name}' = {_number}");
 		}
 
 		public void Set(Boolean truthValue)
