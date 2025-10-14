@@ -19,16 +19,7 @@ namespace LunyScratch
 				Double magnitudeSqr = v.X * v.X + v.Y * v.Y + v.Z * v.Z;
 				var thresholdSqr = metersPerSecond * metersPerSecond;
 
-				return op switch
-				{
-					ComparisonOperator.Less => magnitudeSqr < thresholdSqr,
-					ComparisonOperator.LessOrEqual => magnitudeSqr <= thresholdSqr,
-					ComparisonOperator.Equal => Math.Abs(magnitudeSqr - thresholdSqr) <= 1e-9,
-					ComparisonOperator.NotEqual => Math.Abs(magnitudeSqr - thresholdSqr) > 1e-9,
-					ComparisonOperator.Greater => magnitudeSqr > thresholdSqr,
-					ComparisonOperator.GreaterOrEqual => magnitudeSqr >= thresholdSqr,
-					var _ => false,
-				};
+				return VariableMath.Compare(magnitudeSqr, op, thresholdSqr);
 			}) {}
 	}
 }

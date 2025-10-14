@@ -1,3 +1,4 @@
+using log4net.Appender;
 using System;
 using System.Globalization;
 
@@ -42,27 +43,27 @@ namespace LunyScratch
 		public static implicit operator Variable(Boolean v) => new(v);
 		public static implicit operator Variable(String v) => new(v);
 
-		// Arithmetic operators (numeric-only). If any operand is non-numeric, left operand is returned unchanged.
-		public static Variable operator +(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.Number + b.Number) : a;
-		public static Variable operator -(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.Number - b.Number) : a;
-		public static Variable operator *(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.Number * b.Number) : a;
-		public static Variable operator /(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.Number / b.Number) : a;
-		public static Variable operator %(Variable a, Variable b) => a.IsNumber && b.IsNumber ? new Variable(a.Number % b.Number) : a;
+		// Arithmetic operators now return Double to avoid allocating new Variable instances. Non-numeric values are coerced via Number (Boolean→0/1, String/Null→0).
+		public static Double operator +(Variable a, Variable b) => (a == null ? 0.0 : a.Number) + (b == null ? 0.0 : b.Number);
+		public static Double operator -(Variable a, Variable b) => (a == null ? 0.0 : a.Number) - (b == null ? 0.0 : b.Number);
+		public static Double operator *(Variable a, Variable b) => (a == null ? 0.0 : a.Number) * (b == null ? 0.0 : b.Number);
+		public static Double operator /(Variable a, Variable b) => (a == null ? 0.0 : a.Number) / (b == null ? 0.0 : b.Number);
+		public static Double operator %(Variable a, Variable b) => (a == null ? 0.0 : a.Number) % (b == null ? 0.0 : b.Number);
 
-		public static Variable operator +(Variable a, Double b) => a.IsNumber ? new Variable(a.Number + b) : a;
-		public static Variable operator -(Variable a, Double b) => a.IsNumber ? new Variable(a.Number - b) : a;
-		public static Variable operator *(Variable a, Double b) => a.IsNumber ? new Variable(a.Number * b) : a;
-		public static Variable operator /(Variable a, Double b) => a.IsNumber ? new Variable(a.Number / b) : a;
-		public static Variable operator %(Variable a, Double b) => a.IsNumber ? new Variable(a.Number % b) : a;
+		public static Double operator +(Variable a, Double b) => (a == null ? 0.0 : a.Number) + b;
+		public static Double operator -(Variable a, Double b) => (a == null ? 0.0 : a.Number) - b;
+		public static Double operator *(Variable a, Double b) => (a == null ? 0.0 : a.Number) * b;
+		public static Double operator /(Variable a, Double b) => (a == null ? 0.0 : a.Number) / b;
+		public static Double operator %(Variable a, Double b) => (a == null ? 0.0 : a.Number) % b;
 
-		public static Variable operator +(Double a, Variable b) => b.IsNumber ? new Variable(a + b.Number) : b;
-		public static Variable operator -(Double a, Variable b) => b.IsNumber ? new Variable(a - b.Number) : b;
-		public static Variable operator *(Double a, Variable b) => b.IsNumber ? new Variable(a * b.Number) : b;
-		public static Variable operator /(Double a, Variable b) => b.IsNumber ? new Variable(a / b.Number) : b;
-		public static Variable operator %(Double a, Variable b) => b.IsNumber ? new Variable(a % b.Number) : b;
+		public static Double operator +(Double a, Variable b) => a + (b == null ? 0.0 : b.Number);
+		public static Double operator -(Double a, Variable b) => a - (b == null ? 0.0 : b.Number);
+		public static Double operator *(Double a, Variable b) => a * (b == null ? 0.0 : b.Number);
+		public static Double operator /(Double a, Variable b) => a / (b == null ? 0.0 : b.Number);
+		public static Double operator %(Double a, Variable b) => a % (b == null ? 0.0 : b.Number);
 
-		public static Variable operator +(Variable a) => a;
-		public static Variable operator -(Variable a) => a.IsNumber ? new Variable(-a.Number) : a;
+		public static Double operator +(Variable a) => a == null ? 0.0 : a.Number;
+		public static Double operator -(Variable a) => a == null ? 0.0 : -a.Number;
 		public static Boolean operator !=(Variable a, Variable b) => !(a == b);
 
 		public static Boolean operator ==(Variable a, Variable b)
@@ -136,6 +137,9 @@ namespace LunyScratch
 			_number = number;
 			_string = null;
 			OnValueChanged?.Invoke(this);
+
+			if (_name == "Score" || _name == "Progress")
+				GameEngine.Actions.LogInfo($"'{_name}' = {_number}");
 		}
 
 		public void Set(Boolean truthValue)
