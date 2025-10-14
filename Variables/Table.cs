@@ -54,13 +54,13 @@ namespace LunyScratch
 				switch (value?.ValueType)
 				{
 					case ValueType.Boolean:
-						existing.Set(value.AsBoolean());
+						existing.Set(value.Boolean);
 						break;
 					case ValueType.Number:
-						existing.Set(value.AsNumber());
+						existing.Set(value.Number);
 						break;
 					case ValueType.String:
-						existing.Set(value.AsString());
+						existing.Set(value.String);
 						break;
 				}
 				return existing;
