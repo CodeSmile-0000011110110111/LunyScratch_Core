@@ -18,5 +18,7 @@ namespace LunyScratch
 		public static IScratchBlock HideMenu() => new HideMenuBlock();
 		public static IScratchBlock ReloadCurrentScene() => new ReloadCurrentSceneBlock();
 		public static IScratchBlock QuitApplication() => new QuitApplicationBlock();
+		public static IScratchBlock EnableComponent() => new EnableComponentBlock();
+		public static IScratchBlock DisableComponent() => new DisableComponentBlock();
 	}
 }

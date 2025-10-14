@@ -34,6 +34,12 @@ namespace LunyScratch
 		IEngineCamera ActiveCamera { get; }
 
 		/// <summary>
+		/// Enables or disables the host component for this context (e.g., the MonoBehaviour in Unity).
+		/// Engine adapters must implement this appropriately.
+		/// </summary>
+		void SetSelfComponentEnabled(Boolean enabled);
+
+		/// <summary>
 		/// Provides engine-agnostic UI accessors. Implementations should return a new adapter instance per call.
 		/// </summary>
 		IEngineHUD GetEngineHUD();
