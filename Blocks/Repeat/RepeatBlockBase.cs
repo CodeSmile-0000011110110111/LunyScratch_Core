@@ -1,5 +1,4 @@
-﻿using log4net.Appender;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace LunyScratch

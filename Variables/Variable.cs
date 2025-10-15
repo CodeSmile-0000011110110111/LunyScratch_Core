@@ -1,4 +1,3 @@
-using log4net.Appender;
 using System;
 using System.Globalization;
 
