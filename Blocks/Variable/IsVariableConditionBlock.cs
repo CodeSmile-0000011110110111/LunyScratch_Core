@@ -12,7 +12,6 @@ namespace LunyScratch
 		private readonly String _variableName;
 		private readonly Double _value;
 		private readonly Variable _valueVar;
-		private readonly Boolean _useVarRhs;
 		private readonly ComparisonOperator _op;
 	
 		// Compare a provided Variable instance against Double
@@ -37,7 +36,6 @@ namespace LunyScratch
 			_variable = variable;
 			_value = value;
 			_op = op;
-			_useVarRhs = false;
 		}
 	
 		// Compare a provided Variable instance against Variable
@@ -59,7 +57,6 @@ namespace LunyScratch
 			_variable = variable;
 			_valueVar = value;
 			_op = op;
-			_useVarRhs = true;
 		}
 	
 		// Compare a named variable via context table against Double
@@ -90,7 +87,6 @@ namespace LunyScratch
 			_variableName = variableName;
 			_value = value;
 			_op = op;
-			_useVarRhs = false;
 		}
 	
 		// Compare a named variable via context table against Variable
@@ -117,7 +113,6 @@ namespace LunyScratch
 			_variableName = variableName;
 			_valueVar = value;
 			_op = op;
-			_useVarRhs = true;
 		}
 	}
 }
