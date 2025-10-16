@@ -12,10 +12,13 @@ namespace LunyScratch
 		{
 			if (context == null) return;
 
+			IEngineObject target;
 			if (_childName == null)
-				context.Self?.SetEnabled(false);
+				target = context.Self;
 			else
-				context.FindChild(_childName)?.SetEnabled(false);
+				target = context.FindChild(_childName);
+
+			target?.SetEnabled(false);
 		}
 
 		public Boolean IsComplete() => true;

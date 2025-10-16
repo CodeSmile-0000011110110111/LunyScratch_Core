@@ -10,12 +10,16 @@ namespace LunyScratch
 
 		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
-			if (context == null) return;
+			if (context == null)
+				return;
 
+			IEngineObject target;
 			if (_childName == null)
-				context.Self?.SetEnabled(true);
+				target = context.Self;
 			else
-				context.FindChild(_childName)?.SetEnabled(true);
+				target = context.FindChild(_childName);
+
+			target?.SetEnabled(true);
 		}
 
 		public Boolean IsComplete() => true;
