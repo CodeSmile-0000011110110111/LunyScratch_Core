@@ -52,5 +52,7 @@ namespace LunyScratch
 				}
 			}
 		}
+
+		internal void Clear() => _blocks.Clear();
 	}
 }

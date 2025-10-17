@@ -9,8 +9,9 @@ namespace LunyScratch
 	{
 		public void OnEnter() {}
 		public void OnExit() {}
-		public bool IsComplete() => true;
-		public void Run(IScratchContext context, double deltaTimeInSeconds)
+		public Boolean IsComplete() => true;
+
+		public void Run(IScratchContext context, Double deltaTimeInSeconds)
 		{
 			var ui = context?.GetEngineMenu();
 			ui?.Hide();

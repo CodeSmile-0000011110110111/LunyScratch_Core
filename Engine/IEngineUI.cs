@@ -10,5 +10,6 @@ namespace LunyScratch
 	{
 		void Show();
 		void Hide();
+		void BindVariable(Variable variable);
 	}
 }
