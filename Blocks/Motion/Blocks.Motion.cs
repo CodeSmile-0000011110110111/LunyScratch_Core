@@ -17,24 +17,24 @@ namespace LunyScratch
 		/// Returns a condition that checks the current context Rigidbody's linear speed against a threshold (m/s)
 		/// using the specified comparison operator. Uses squared magnitudes to avoid sqrt.
 		/// </summary>
-		public static ConditionBlock IsLinearVelocity(Double metersPerSecond, ComparisonOperator op = ComparisonOperator.Equal) =>
+		public static ConditionBlock IsVelocity(Double metersPerSecond, ComparisonOperator op = ComparisonOperator.Equal) =>
 			new IsLinearVelocityConditionBlock(metersPerSecond, op);
 
 		public static ConditionBlock IsVelocityLess(Double thresholdMetersPerSecond) =>
-			IsLinearVelocity(thresholdMetersPerSecond, ComparisonOperator.Less);
+			IsVelocity(thresholdMetersPerSecond, ComparisonOperator.Less);
 
 		public static ConditionBlock IsVelocityLessOrEqual(Double thresholdMetersPerSecond) =>
-			IsLinearVelocity(thresholdMetersPerSecond, ComparisonOperator.LessOrEqual);
+			IsVelocity(thresholdMetersPerSecond, ComparisonOperator.LessOrEqual);
 
-		public static ConditionBlock IsVelocityEqual(Double thresholdMetersPerSecond) => IsLinearVelocity(thresholdMetersPerSecond);
+		public static ConditionBlock IsVelocityEqual(Double thresholdMetersPerSecond) => IsVelocity(thresholdMetersPerSecond);
 
 		public static ConditionBlock IsVelocityNotEqual(Double thresholdMetersPerSecond) =>
-			IsLinearVelocity(thresholdMetersPerSecond, ComparisonOperator.NotEqual);
+			IsVelocity(thresholdMetersPerSecond, ComparisonOperator.NotEqual);
 
-		public static ConditionBlock IsVelocityGreater(Double thresholdMetersPerSecond) =>
-			IsLinearVelocity(thresholdMetersPerSecond, ComparisonOperator.Greater);
+		public static ConditionBlock IsCurrentSpeedGreater(Double thresholdMetersPerSecond) =>
+			IsVelocity(thresholdMetersPerSecond, ComparisonOperator.Greater);
 
 		public static ConditionBlock IsVelocityGreaterOrEqual(Double thresholdMetersPerSecond) =>
-			IsLinearVelocity(thresholdMetersPerSecond, ComparisonOperator.GreaterOrEqual);
+			IsVelocity(thresholdMetersPerSecond, ComparisonOperator.GreaterOrEqual);
 	}
 }
