@@ -60,5 +60,7 @@ namespace LunyScratch
 		/// Returns true if an event was found and consumed.
 		/// </summary>
 		Boolean QueryCollisionEnterEvents(String nameFilter, String tagFilter);
+
+		void Dispose();
 	}
 }
