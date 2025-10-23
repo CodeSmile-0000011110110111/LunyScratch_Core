@@ -21,7 +21,9 @@ namespace LunyScratch
 		{
 			if (_subscribed || menu == null)
 				return;
+
 			menu.OnButtonClicked += OnMenuButtonClicked;
+			menu.RegisterEventHandler(_buttonName);
 			_subscribed = true;
 		}
 
@@ -29,6 +31,16 @@ namespace LunyScratch
 		{
 			if (string.Equals(name, _buttonName, StringComparison.InvariantCulture))
 				_matched = true;
+		}
+
+		public void OnEnter()
+		{
+			// subscribe here, needs context
+		}
+
+		public void OnExit()
+		{
+			// unsubscribe here
 		}
 
 		internal override bool Evaluate(IScratchContext context)

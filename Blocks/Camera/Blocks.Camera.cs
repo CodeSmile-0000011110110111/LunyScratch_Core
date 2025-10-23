@@ -5,6 +5,6 @@ namespace LunyScratch
 		/// <summary>
 		/// Clears the active camera's tracking target (engine-agnostic).
 		/// </summary>
-		public static IScratchBlock SetCameraTrackingTarget(IEngineObject target) => new SetCameraTrackingTargetBlock(target);
+		public static IScratchBlock SetCameraTrackingTarget(IEngineObject target = null) => new SetCameraTrackingTargetBlock(target);
 	}
 }
