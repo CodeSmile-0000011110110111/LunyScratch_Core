@@ -6,5 +6,7 @@ namespace LunyScratch
 	{
 		void SetEnabled(Boolean enabled);
 		//void ScheduleDestroy(Double delayInSeconds);
+
+		T GetEngineObject<T>() where T : class;
 	}
 }

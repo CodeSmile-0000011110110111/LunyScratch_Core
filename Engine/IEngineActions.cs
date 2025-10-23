@@ -28,7 +28,7 @@ namespace LunyScratch
 		Boolean IsMouseButtonJustReleased(MouseButton button);
 
 		// OBJECTS
-		IEngineObject InstantiatePrefab(IEnginePrefabAsset prefab, ITransform transform);
+		IEngineObject InstantiatePrefab(IEnginePrefabAsset prefab, ITransform transform = null);
 
 		// APPLICATION / SCENE MANAGEMENT
 		void ReloadCurrentScene();
